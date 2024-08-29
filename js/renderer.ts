@@ -425,11 +425,19 @@ function applyLayoutToSceneGraph(n: NodeWrapper, context: Context, force?: boole
                 sw,
                 sh,
                 borderSize: (n.props.borderSize ?? 0) * context.comp.scaling[0],
+                borderPercentage: n.props.borderPercentage ?? 0.4,
             };
             const props = (m as any).nineSliceProps ?? {};
             const needsUpdate = !propsEqual(props, p);
             if (needsUpdate) {
-                mesh = nineSlice(context.comp.engine, p.sw, p.sh, p.borderSize, mesh);
+                mesh = nineSlice(
+                    context.comp.engine,
+                    p.sw,
+                    p.sh,
+                    p.borderSize,
+                    p.borderPercentage,
+                    mesh
+                );
                 (m as any).nineSliceProps = p;
             }
             child.setPositionLocal([centerX, centerY, Z_INC]);

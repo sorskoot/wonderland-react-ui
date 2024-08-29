@@ -6,6 +6,7 @@ export function nineSlice(
     width: number,
     height: number,
     borderSize: number,
+    borderPercentage?: number | null,
     oldMesh?: Mesh | null
 ): Mesh {
     const vertexCount = 16;
@@ -94,41 +95,42 @@ export function nineSlice(
         -w, -h, 0,
     ]);
     const texCoords = mesh.attribute(MeshAttribute.TextureCoordinate);
+    const bp = borderPercentage ?? 0.4;
     if (texCoords) {
         // prettier-ignore
         texCoords.set(0, [
             /* 0 */
-            0.4, 0.4,
+            bp, 1.0 - bp,
             /* 1 */
-            0.6, 0.4,
+            1.0 - bp, 1.0 - bp,
             /* 2 */
-            0.6, 0.6,
+            1.0 - bp, bp,
             /* 3 */
-            0.4, 0.6,
+            bp, bp,
             /* 4 */
-            0.4, 0.0,
+            bp, 1.0,
             /* 5 */
-            0.6, 0.0,
+            1.0 - bp, 1.0,
             /* 6 */
-            1.0, 0.4,
+            1.0, 1.0 - bp,
             /* 7 */
-            1.0, 0.6,
+            1.0, bp,
             /* 8 */
-            0.6, 1.0,
+            1.0 - bp, 0.0,
             /* 9 */
-            0.4, 1.0,
+            bp, 0.0,
             /* 10 */
-            0.0, 0.6,
+            0.0, bp,
             /* 11 */
-            0.0, 0.4,
+            0.0, 1.0 - bp,
             /* 12 */
-            0.0, 0.0,
-            /* 13 */
-            1.0, 0.0,
-            /* 14 */
-            1.0, 1.0,
-            /* 15 */
             0.0, 1.0,
+            /* 13 */
+            1.0, 1.0,
+            /* 14 */
+            1.0, 0.0,
+            /* 15 */
+            0.0, 0.0,
         ]);
     }
     const norm = mesh.attribute(MeshAttribute.Normal);

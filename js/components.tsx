@@ -113,6 +113,7 @@ export const Panel9Slice = (
         PanelProps & {
             texture?: Texture | null;
             borderSize?: number;
+            borderPercentage?: number;
         }
     >
 ): React.JSX.Element => {
