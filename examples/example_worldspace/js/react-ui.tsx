@@ -15,6 +15,35 @@ import {
     Panel9Slice,
 } from '@wonderlandengine/react-ui/components';
 import React, {useEffect, useState} from 'react';
+//@ts-ignore
+import * as RefreshRuntime from 'react-refresh/runtime';
+
+if (!(window as any).$RefreshReg$) {
+    RefreshRuntime.injectIntoGlobalHook(globalThis);
+}
+// Expose the names the transforms call:
+// @ts-ignore
+window.$RefreshReg$ = window.$RefreshReg$ || RefreshRuntime.register;
+// @ts-ignore
+window.$RefreshSig$ =
+    // @ts-ignore
+    window.$RefreshSig$ || RefreshRuntime.createSignatureFunctionForTransform;
+// //@ts-ignore
+// var prevRefreshReg = window.$RefreshReg$;
+// //@ts-ignore
+// var prevRefreshSig = window.$RefreshSig$;
+// // // Attach React Refresh into the global hook that React uses for dev tools:
+// // RefreshRuntime.injectIntoGlobalHook(globalThis);
+
+//@ts-ignore
+// window.$RefreshReg$ = (type, id) => {
+//     // Note module.id is webpack-specific, this may vary in other bundlers
+//     const fullId = import.meta.filename + ' ' + id;
+//     RefreshRuntime.register(type, fullId);
+// };
+//@ts-ignore
+const _s = window.$RefreshSig$();
+var _c = undefined; //'react-ui.tsx';
 
 const App = (props: {comp: ReactUi}) => {
     const comp = props.comp;
@@ -62,7 +91,7 @@ const App = (props: {comp: ReactUi}) => {
                     rounding={100}
                     resolution={10}
                     borderSize={2}
-                    width={'80%'}
+                    width={'40%'}
                 >
                     <Column padding="8%" width="100%" rowGap={20} height="100%">
                         <ProgressBar
@@ -148,6 +177,8 @@ const App = (props: {comp: ReactUi}) => {
     );
 };
 
+App.isReactComponent = true;
+
 /**
  * react-ui
  */
@@ -174,3 +205,20 @@ export class ReactUi extends ReactUiBase {
         return <App comp={this} />;
     }
 }
+// register the handle created by the transform
+// @ts-ignore
+//window.$RefreshReg$(App, 'App');
+
+// signature call inserted by transform
+// @ts-ignore
+//window.$RefreshSig$(App, 'useState{(0)}');
+
+//_s(App, 'useState{[list, setList]}(["Element 0","Element 1"])');
+
+// //@ts-ignore
+// window.$RefreshReg$ = prevRefreshReg;
+// //@ts-ignore
+// window.$RefreshSig$ = prevRefreshSig;
+_c = App;
+(window as any).$RefreshReg$(App, 'App');
+_s(App, 'useState{[list, setList]}(["Element 0","Element 1"])');

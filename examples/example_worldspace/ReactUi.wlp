@@ -674,20 +674,20 @@
         },
         "scripting": {
             "application": {
-                "output": "ReactUi-bundle.js",
+                "output": "ReactUi-app.js",
                 "bundling": "esbuild",
-                "esbuildFlags": "--format=esm",
-                "entryPoint": "js/index.js"
+                "esbuildFlags": "--format=esm --target=es2022 --external:@wonderlandengine/api",
+                "entryPoint": "app.js"
             },
             "libraryPaths": [
                 "/js/lib/"
             ],
             "components": {
                 "sourcePaths": [
-                    "js/",
-                    "../js"
+                    "js/"
                 ],
-                "bundling": "none"
+                "bundling": "esbuild",
+                "output": "ReactUi-bundle.js"
             },
             "esbuildFlagsEditor": " --bundle"
         },

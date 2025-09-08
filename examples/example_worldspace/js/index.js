@@ -1,16 +1,3 @@
-/**
- * /!\ This file is auto-generated.
- *
- * This is the entry point of your standalone application.
- *
- * There are multiple tags used by the editor to inject code automatically:
- *     - `wle:auto-imports:start` and `wle:auto-imports:end`: The list of import statements
- *     - `wle:auto-register:start` and `wle:auto-register:end`: The list of component to register
- *     - `wle:auto-constants:start` and `wle:auto-constants:end`: The project's constants,
- *        such as the project's name, whether it should use the physx runtime, etc...
- *     - `wle:auto-benchmark:start` and `wle:auto-benchmark:end`: Append the benchmarking code
- */
-
 /* wle:auto-imports:start */
 import {Cursor} from '@wonderlandengine/components';
 import {InputProfile} from '@wonderlandengine/components';
@@ -19,78 +6,58 @@ import {WasdControlsComponent} from '@wonderlandengine/components';
 import {ReactUi} from './react-ui.tsx';
 /* wle:auto-imports:end */
 
-import { loadRuntime } from '@wonderlandengine/api';
-import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibility.
+//}
 
-/* wle:auto-constants:start */
-const Constants = {
-    ProjectName: 'ReactUi',
-    RuntimeBaseName: 'WonderlandRuntime',
-    WebXRRequiredFeatures: ['local',],
-    WebXROptionalFeatures: ['local','hand-tracking','hit-test',],
-};
-const RuntimeOptions = {
-    physx: false,
-    loader: false,
-    xrFramebufferScaleFactor: 1,
-    xrOfferSession: {
-        mode: 'auto',
-        features: Constants.WebXRRequiredFeatures,
-        optionalFeatures: Constants.WebXROptionalFeatures,
-    },
-    canvas: 'canvas',
-};
-/* wle:auto-constants:end */
+// var prevRefreshReg = window.$RefreshReg$;
+// var prevRefreshSig = window.$RefreshSig$;
+// var RefreshRuntime = require('react-refresh/runtime');
 
-const engine = await loadRuntime(Constants.RuntimeBaseName, RuntimeOptions);
-Object.assign(engine, API); // Deprecated: Backward compatibility.
-window.WL = engine; // Deprecated: Backward compatibility.
+// function debounce(func, wait) {
+//     let timeout;
+//     return function (...args) {
+//         const context = this;
+//         clearTimeout(timeout);
+//         timeout = setTimeout(() => func.apply(context, args), wait);
+//     };
+// }
 
-engine.onSceneLoaded.once(() => {
-    const el = document.getElementById('version');
-    if (el) setTimeout(() => el.remove(), 2000);
-});
 
-/* WebXR setup. */
+// window.$RefreshReg$ = (type, id) => {
+//     // Note module.id is webpack-specific, this may vary in other bundlers
+//     const fullId = module.id + ' ' + id;
+//     RefreshRuntime.register(type, fullId);
+// }
+// window.$RefreshSig$ = RefreshRuntime.createSignatureFunctionForTransform;
 
-function requestSession(mode) {
-    engine
-        .requestXRSession(mode, Constants.WebXRRequiredFeatures, Constants.WebXROptionalFeatures)
-        .catch((e) => console.error(e));
-}
 
-function setupButtonsXR() {
-    /* Setup AR / VR buttons */
-    const arButton = document.getElementById('ar-button');
-    if (arButton) {
-        arButton.dataset.supported = engine.arSupported;
-        arButton.addEventListener('click', () => requestSession('immersive-ar'));
-    }
-    const vrButton = document.getElementById('vr-button');
-    if (vrButton) {
-        vrButton.dataset.supported = engine.vrSupported;
-        vrButton.addEventListener('click', () => requestSession('immersive-vr'));
-    }
-}
 
-if (document.readyState === 'loading') {
-    window.addEventListener('load', setupButtonsXR);
-} else {
-    setupButtonsXR();
-}
 
-/* wle:auto-register:start */
+export default function (engine) {
+    //    try {
+    /* wle:auto-register:start */
 engine.registerComponent(Cursor);
 engine.registerComponent(InputProfile);
 engine.registerComponent(MouseLookComponent);
 engine.registerComponent(WasdControlsComponent);
 engine.registerComponent(ReactUi);
 /* wle:auto-register:end */
+    // } finally {
+    //     window.$RefreshReg$ = prevRefreshReg;
+    //     window.$RefreshSig$ = prevRefreshSig;
+    // }
 
-engine.scene.load(`${Constants.ProjectName}.bin`).catch((e) => {
-    console.error(e);
-    window.alert(`Failed to load ${Constants.ProjectName}.bin:`, e);
-});
+    // const myExports = module.exports;
+    // // Note: I think with ES6 exports you might also have to look at .__proto__, at least in webpack
 
-/* wle:auto-benchmark:start */
-/* wle:auto-benchmark:end */
+    // if (isReactRefreshBoundary(myExports)) {
+    //     module.hot.accept(); // Depends on your bundler
+
+    // }
+
+    // engine.onHotReloadRequest.add(() => {
+    //     console.log('HMR: Hot reloading main scene');
+    //     RefreshRuntime.performReactRefresh();
+    // let enqueueUpdate = debounce(runtime.performReactRefresh, 30);
+    // enqueueUpdate();
+    //});
+}

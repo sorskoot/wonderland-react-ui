@@ -6,6 +6,7 @@
     "type": "module",
     "module": "js/index.js",
     "scripts": {
+        "build": "node ./scripts/custombuild.js",
         "bootstrap": "npm install --workspaces=false",
         "build:wl": "wonderland-editor --package --windowless --project ReactUi.wlp",
         "update-reactui": "npm update @wonderlandengine/react-ui --workspaces=false"
@@ -25,6 +26,9 @@
         "@wonderlandengine/api": "$@wonderlandengine/api"
     },
     "devDependencies": {
-        "@wonderlandengine/cli": "^0.1.4"
+        "@babel/core": "^7.28.3",
+        "@wonderlandengine/cli": "^0.1.4",
+        "esbuild": "^0.25.9",
+        "react-refresh": "^0.17.0"
     }
 }
