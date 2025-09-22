@@ -1,7 +1,9 @@
 import {Object3D, Material} from '@wonderlandengine/api';
-import React, {forwardRef, PropsWithChildren, useState} from 'react';
-import type {Color, YogaNodeProps} from '../renderer-types.js';
+import React, {forwardRef, PropsWithChildren, useContext, useState} from 'react';
+import type {Color, TextProps, YogaNodeProps} from '../renderer-types.js';
 import {Panel} from './Panel.js';
+import {Text} from './Text.js';
+import {colors, ThemeContext} from '../theme.js';
 
 /**
  * An interactive button component with hover and active states.
@@ -55,6 +57,7 @@ export const Button = forwardRef<
     Object3D,
     PropsWithChildren<
         {
+            variant?: 'default' | 'secondary';
             material?: Material;
             backgroundColor?: Color;
 
@@ -83,12 +86,25 @@ export const Button = forwardRef<
     const [hovered, setHovered] = useState(false);
     const [active, setActive] = useState(false);
 
+    const theme = useContext(ThemeContext);
+
+    const variants = {
+        'default': {
+            backgroundColor: theme.primary,
+        },
+        'secondary': {
+            backgroundColor: theme.secondary,
+        },
+    };
+
+    const [variant] = useState(() => variants[props.variant ?? 'default']);
     // TK: somehow default props should be integrated here
 
     let propsMerged = {
         ...props,
         ...(hovered ? props.hovered : undefined),
         ...(active ? props.active : undefined),
+        backgroundColor: props.backgroundColor ?? variant.backgroundColor,
     };
     return (
         <Panel
@@ -99,7 +115,11 @@ export const Button = forwardRef<
             onUp={() => setActive(false)}
             ref={ref}
         >
-            {props.children}
+            {typeof props.children === 'string' ? (
+                <Text {...props}>{props.children.toString()}</Text>
+            ) : (
+                props.children
+            )}
         </Panel>
     );
 });

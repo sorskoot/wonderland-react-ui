@@ -95,6 +95,9 @@ export interface YogaNodeProps {
 export interface TextProps extends YogaNodeProps {
     text?: string;
     fontSize?: number;
+    /**
+     * Font material
+     */
     material?: Material | null;
     textAlign?: 'left' | 'center' | 'right';
     textWrap?: 'none' | 'soft' | 'hard' | 'clip';
@@ -138,3 +141,24 @@ export type ReactComp = Component & {
     updateLayout(): void;
     render(): ReactNode;
 };
+
+// Utility type to convert a union to an intersection
+type UnionToIntersection<U> = (U extends any ? (x: U) => void : never) extends (
+    x: infer I
+) => void
+    ? I
+    : never;
+
+// Intersects all values of a record type
+type IntersectValues<T extends Record<PropertyKey, unknown>> = UnionToIntersection<
+    T[keyof T]
+>;
+
+// Makes all properties optional recursively
+type RecursivePartial<T> = T extends object ? {[K in keyof T]?: RecursivePartial<T[K]>} : T;
+
+// Creates a record of partial overrides for each variant key, based on shared properties
+export type VariantOverrides<T extends Record<PropertyKey, unknown>> = Record<
+    keyof T,
+    RecursivePartial<IntersectValues<T>>
+>;

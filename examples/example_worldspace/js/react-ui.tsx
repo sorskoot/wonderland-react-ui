@@ -1,4 +1,4 @@
-import {Texture} from '@wonderlandengine/api';
+import {Material, Texture} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
 import {
@@ -43,18 +43,18 @@ const App = (props: {comp: ReactUi}) => {
     );
 
     const theme = {
-        colors: {
-            background: comp.panelSecondary,
+        //colors: {
+        background: comp.panelSecondary,
 
-            primary: comp.panelSecondary,
-            primaryActive: comp.panelSecondaryActive,
-            primaryHovered: comp.panelSecondaryHovered,
+        primary: comp.panelSecondary,
+        primaryActive: comp.panelSecondaryActive,
+        primaryHovered: comp.panelSecondaryHovered,
 
-            borderPrimary: 0,
-            borderPrimaryActive: 0,
-            borderPrimaryHovered: 0xffffffff,
-            text: comp.textColor,
-        },
+        borderPrimary: 0,
+        borderPrimaryActive: 0,
+        borderPrimaryHovered: 0xffffffff,
+        text: comp.textColor,
+        //},
     };
 
     return (
@@ -88,7 +88,9 @@ const App = (props: {comp: ReactUi}) => {
                             }}
                             padding={20}
                         >
-                            <Text fontSize={24}>Add Item</Text>
+                            <Text material={props.comp.buttonTextMaterial} fontSize={24}>
+                                Add Item
+                            </Text>
                         </Button>
                         {list.map((label, i) => (
                             <Row
@@ -100,11 +102,11 @@ const App = (props: {comp: ReactUi}) => {
                             >
                                 <Text fontSize={20}>{label}</Text>
                                 <Button
+                                    variant="secondary"
                                     width={100}
                                     height="100%"
                                     rounding={10}
                                     onClick={(e) => removeListElement(i)}
-                                    backgroundColor={props.comp.panelSecondary}
                                     hovered={{
                                         backgroundColor: props.comp.panelSecondaryHovered,
                                     }}
@@ -160,6 +162,9 @@ export class ReactUi extends ReactUiBase {
 
     @property.color(1, 1, 1, 1)
     textColor!: Float32Array;
+
+    @property.material()
+    buttonTextMaterial!: Material;
 
     @property.color(1, 1, 1, 1)
     panelSecondary!: Float32Array;

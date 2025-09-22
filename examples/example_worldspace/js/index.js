@@ -13,8 +13,11 @@
 
 /* wle:auto-imports:start */
 import {Cursor} from '@wonderlandengine/components';
+import {FingerCursor} from '@wonderlandengine/components';
+import {HandTracking} from '@wonderlandengine/components';
 import {InputProfile} from '@wonderlandengine/components';
 import {MouseLookComponent} from '@wonderlandengine/components';
+import {VrModeActiveSwitch} from '@wonderlandengine/components';
 import {WasdControlsComponent} from '@wonderlandengine/components';
 import {ReactUi} from './react-ui.tsx';
 /* wle:auto-imports:end */
@@ -81,8 +84,11 @@ if (document.readyState === 'loading') {
 
 /* wle:auto-register:start */
 engine.registerComponent(Cursor);
+engine.registerComponent(FingerCursor);
+engine.registerComponent(HandTracking);
 engine.registerComponent(InputProfile);
 engine.registerComponent(MouseLookComponent);
+engine.registerComponent(VrModeActiveSwitch);
 engine.registerComponent(WasdControlsComponent);
 engine.registerComponent(ReactUi);
 /* wle:auto-register:end */

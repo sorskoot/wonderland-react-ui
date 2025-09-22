@@ -47,7 +47,7 @@ export const Text = forwardRef<
         (mat as unknown as FlatMaterial).setColor(
             parseColor(
                 props.color ??
-                    theme.colors?.text ??
+                    theme.text ??
                     ((props.material ?? context.textMaterial) as unknown as FlatMaterial)
                         .color,
                 tempColor
