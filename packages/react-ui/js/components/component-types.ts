@@ -17,22 +17,6 @@ export const MaterialContext = createContext(
     }
 );
 
-export const ThemeContext = createContext(
-    {} as {
-        colors?: {
-            background?: Color;
-
-            primary?: Color;
-            primaryActive?: Color;
-            primaryHovered?: Color;
-            borderPrimary?: Color;
-            borderPrimaryActive?: Color;
-            borderPrimaryHovered?: Color;
-            text?: Color;
-        };
-    }
-);
-
 declare global {
     namespace JSX {
         interface IntrinsicElements {

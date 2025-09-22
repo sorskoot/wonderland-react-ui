@@ -2,7 +2,8 @@ import {Object3D} from '@wonderlandengine/api';
 import React, {forwardRef, PropsWithChildren, useContext, useMemo} from 'react';
 import type {TextProps, Color} from '../renderer-types.js';
 import {parseColor} from '../utils.js';
-import {MaterialContext, ThemeContext, FlatMaterial} from './component-types.js';
+import {MaterialContext, FlatMaterial} from './component-types.js';
+import {ThemeContext} from '../theme.js';
 
 const tempColor = new Float32Array(4);
 /**
@@ -40,6 +41,7 @@ export const Text = forwardRef<
 >((props, ref) => {
     const context = useContext(MaterialContext);
     const theme = useContext(ThemeContext);
+
     const mat = props.material ?? useMemo(() => context.textMaterial?.clone(), []);
     if (mat) {
         (mat as unknown as FlatMaterial).setColor(

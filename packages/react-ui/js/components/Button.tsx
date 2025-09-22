@@ -83,6 +83,8 @@ export const Button = forwardRef<
     const [hovered, setHovered] = useState(false);
     const [active, setActive] = useState(false);
 
+    // TK: somehow default props should be integrated here
+
     let propsMerged = {
         ...props,
         ...(hovered ? props.hovered : undefined),

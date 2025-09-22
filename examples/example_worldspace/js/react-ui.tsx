@@ -1,7 +1,13 @@
 import {Texture} from '@wonderlandengine/api';
 import {property} from '@wonderlandengine/api/decorators.js';
 
-import {Align, FlexDirection, Justify, ReactUiBase} from '@wonderlandengine/react-ui';
+import {
+    Align,
+    FlexDirection,
+    Justify,
+    ReactUiBase,
+    ThemeProvider,
+} from '@wonderlandengine/react-ui';
 import {
     Column,
     Panel,
@@ -10,7 +16,6 @@ import {
     Row,
     ProgressBar,
     MaterialContext,
-    ThemeContext,
     Image,
     Panel9Slice,
 } from '@wonderlandengine/react-ui/components';
@@ -54,7 +59,7 @@ const App = (props: {comp: ReactUi}) => {
 
     return (
         <MaterialContext.Provider value={props.comp}>
-            <ThemeContext.Provider value={theme}>
+            <ThemeProvider theme={theme}>
                 <Panel
                     material={props.comp.panelMaterial}
                     rounding={100}
@@ -141,7 +146,7 @@ const App = (props: {comp: ReactUi}) => {
                         </Panel9Slice>
                     </Column>
                 </Panel>
-            </ThemeContext.Provider>
+            </ThemeProvider>
         </MaterialContext.Provider>
     );
 };
