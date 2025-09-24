@@ -179,7 +179,7 @@
                     "type": "react-ui",
                     "react-ui": {
                         "textMaterial": "80",
-                        "space": "world",
+                        "space": "screen",
                         "panelMaterial": "26",
                         "panelMaterialSecondary": "22",
                         "panelMaterialSecondaryHovered": "77",
@@ -205,8 +205,8 @@
                             1.0
                         ],
                         "panelMaterialTextured": "7",
-                        "nineSliceTexture": "88",
-                        "buttonTextMaterial": "82"
+                        "nineSliceTexture": 1,
+                        "buttonTextMaterial": 7
                     }
                 }
             ]
@@ -665,7 +665,7 @@
     },
     "settings": {
         "project": {
-            "name": "ReactUi",
+            "name": "ReactUi-Theming",
             "version": [
                 1,
                 4,
@@ -686,7 +686,7 @@
         },
         "scripting": {
             "application": {
-                "output": "ReactUi-bundle.js",
+                "output": "ReactUi-Theming-bundle.js",
                 "bundling": "esbuild",
                 "esbuildFlags": "--format=esm --target=es2022",
                 "entryPoint": "js/index.js"

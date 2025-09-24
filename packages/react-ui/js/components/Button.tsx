@@ -67,14 +67,14 @@ export const Button = forwardRef<
             borderSize?: number;
             borderColor?: Color;
 
-            hovered: {
+            hovered?: {
                 material?: Material;
                 backgroundColor?: Color;
                 borderSize?: number;
                 borderColor?: Color;
             };
 
-            active: {
+            active?: {
                 material?: Material;
                 backgroundColor?: Color;
                 borderSize?: number;
@@ -86,26 +86,54 @@ export const Button = forwardRef<
     const [hovered, setHovered] = useState(false);
     const [active, setActive] = useState(false);
 
-    const theme = useContext(ThemeContext);
-
+    let theme = useContext(ThemeContext);
+    let specializedTheme = false;
     const variants = {
         'default': {
             backgroundColor: theme.primary,
+            hovered: {
+                backgroundColor: theme.primaryHovered,
+                borderSize: 1,
+            },
+            active: {
+                backgroundColor: theme.primaryActive,
+            },
         },
         'secondary': {
             backgroundColor: theme.secondary,
+            hovered: {
+                backgroundColor: theme.secondaryHovered,
+            },
+            active: {
+                backgroundColor: theme.secondaryActive,
+            },
         },
     };
 
     const [variant] = useState(() => variants[props.variant ?? 'default']);
+    if ('button' in theme) {
+        //@ts-ignore
+        theme = {...theme, ...theme.button};
+        specializedTheme = true;
+    }
+
     // TK: somehow default props should be integrated here
 
     let propsMerged = {
         ...props,
-        ...(hovered ? props.hovered : undefined),
-        ...(active ? props.active : undefined),
-        backgroundColor: props.backgroundColor ?? variant.backgroundColor,
+        backgroundColor:
+            props.backgroundColor ?? theme.backgroundColor ?? variant.backgroundColor,
+        ...(hovered ? props.hovered ?? theme.hovered ?? variant.hovered : undefined),
+        ...(active ? props.active ?? theme.active ?? variant.active : undefined),
     };
+
+    const content =
+        typeof props.children === 'string' ? (
+            <Text {...props}>{props.children.toString()}</Text>
+        ) : (
+            props.children
+        );
+
     return (
         <Panel
             {...propsMerged}
@@ -115,10 +143,10 @@ export const Button = forwardRef<
             onUp={() => setActive(false)}
             ref={ref}
         >
-            {typeof props.children === 'string' ? (
-                <Text {...props}>{props.children.toString()}</Text>
+            {specializedTheme ? (
+                <ThemeContext.Provider value={theme}>{content}</ThemeContext.Provider>
             ) : (
-                props.children
+                content
             )}
         </Panel>
     );

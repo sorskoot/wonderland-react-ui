@@ -24,7 +24,7 @@ import * as API from '@wonderlandengine/api'; // Deprecated: Backward compatibil
 
 /* wle:auto-constants:start */
 const Constants = {
-    ProjectName: 'ReactUi',
+    ProjectName: 'ReactUi-Theming',
     RuntimeBaseName: 'WonderlandRuntime',
     WebXRRequiredFeatures: ['local',],
     WebXROptionalFeatures: ['local','hand-tracking','hit-test',],

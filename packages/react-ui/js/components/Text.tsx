@@ -40,16 +40,27 @@ export const Text = forwardRef<
     >
 >((props, ref) => {
     const context = useContext(MaterialContext);
-    const theme = useContext(ThemeContext);
+    let theme = useContext(ThemeContext);
 
-    const mat = props.material ?? useMemo(() => context.textMaterial?.clone(), []);
+    if ('text' in theme) {
+        //@ts-ignore
+        theme = {...theme, ...theme.text};
+    }
+
+    const mat =
+        props.material ??
+        theme.textMaterial ??
+        useMemo(() => context.textMaterial?.clone(), []);
     if (mat) {
         (mat as unknown as FlatMaterial).setColor(
             parseColor(
                 props.color ??
-                    theme.text ??
-                    ((props.material ?? context.textMaterial) as unknown as FlatMaterial)
-                        .color,
+                    theme.textColor ??
+                    (
+                        (props.material ??
+                            theme.textMaterial ??
+                            context.textMaterial) as unknown as FlatMaterial
+                    ).color,
                 tempColor
             )
         );
