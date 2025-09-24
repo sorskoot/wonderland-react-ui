@@ -67,6 +67,7 @@ export const Text = forwardRef<
     }
     return React.createElement('text3d', {
         ...props,
+        fontSize: props.fontSize ?? theme.fontSize ?? 32,
         material: mat,
         text: props.children?.toString() ?? props.text,
         ref: ref,

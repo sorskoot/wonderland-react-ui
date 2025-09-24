@@ -32,7 +32,7 @@ DefaultTheme.active = {
     borderColor: DefaultTheme.borderPrimaryActive,
 };
 
-export type Theme = typeof DefaultTheme;
+export type Theme = typeof DefaultTheme & {[key: string]: any};
 
 export const colors = DefaultTheme;
 

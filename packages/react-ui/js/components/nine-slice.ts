@@ -103,7 +103,7 @@ export function nineSlice(
     ]);
     const texCoords = mesh.attribute(MeshAttribute.TextureCoordinate);
     if (texCoords) {
-        const b = borderTextureSize ?? 0.5;
+        const b = borderTextureSize ?? 0.33;
         // prettier-ignore
         texCoords.set(0, [
             /* 0 */

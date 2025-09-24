@@ -46,21 +46,43 @@ const App = (props: {comp: ReactUi}) => {
     const theme = {
         //colors: {
         // background: comp.panelSecondary,
-        // primary: comp.panelSecondary,
+        primary: '#1b9ed9',
+        secondary: '#1b9ed9',
         // primaryActive: comp.panelSecondaryActive,
         // primaryHovered: comp.panelSecondaryHovered,
         // borderPrimary: 0,
         // borderPrimaryActive: 0,
         // borderPrimaryHovered: 0xffffffff,
-        // text: comp.textColor,
+        textColor: '#1b9ed9',
         //},
-        // button: {
-        //     backgroundColor: '#ff0000',
-        //     text: {
-        //         textColor: '#00ffff',
-        //         textMaterial: comp.buttonTextMaterial,
-        //     },
-        // },
+        button: {
+            padding: 8,
+            height: 40,
+            text: {
+                fontSize: 16,
+            },
+            hovered: {
+                backgroundColor: '#1b9ed9',
+                text: {
+                    textColor: '#ffffff',
+                },
+            },
+        },
+        fontSize: 24,
+        panel9Slice: {
+            borderSize: 16, // in world units
+            borderTextureSize: 0.25,
+            padding: 16,
+            variant: {
+                'header': {
+                    texture: comp.diaglogBlue,
+                    justifyContent: Justify.Center,
+                    alignItems: Align.Center,
+                    text: {textColor: '#ffffff'},
+                },
+                'body': {texture: comp.diaglogWhite},
+            },
+        },
     };
 
     return (
@@ -71,7 +93,24 @@ const App = (props: {comp: ReactUi}) => {
                     alignItems={Align.Center}
                     justifyContent={Justify.Center}
                 >
-                    <Panel alignSelf={Align.Center} width={500} height={400}></Panel>
+                    <Panel9Slice variant="header" width={500} height={64}>
+                        <Text>This is the header</Text>
+                    </Panel9Slice>
+                    <Panel9Slice variant="body" width={500} height={400} gap={16}>
+                        <Text>This is the body</Text>
+                        <Button variant="default">Primary Button</Button>
+                        <Button variant="secondary">Secondary Button</Button>
+                    </Panel9Slice>
+                </Container>
+            </ThemeProvider>
+        </MaterialContext.Provider>
+    );
+};
+
+/**
+                        width={500}
+                        height={400}
+                    ></Panel9Slice>
                 </Container>
             </ThemeProvider>
         </MaterialContext.Provider>
@@ -84,6 +123,12 @@ const App = (props: {comp: ReactUi}) => {
 export class ReactUi extends ReactUiBase {
     static TypeName = 'react-ui';
     static InheritProperties = true;
+
+    @property.texture()
+    diaglogWhite?: Texture;
+
+    @property.texture()
+    diaglogBlue?: Texture;
 
     render() {
         return <App comp={this} />;

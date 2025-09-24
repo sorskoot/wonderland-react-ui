@@ -91,6 +91,7 @@ export const Button = forwardRef<
     const variants = {
         'default': {
             backgroundColor: theme.primary,
+            borderSize: 0,
             hovered: {
                 backgroundColor: theme.primaryHovered,
                 borderSize: 1,
@@ -100,6 +101,7 @@ export const Button = forwardRef<
             },
         },
         'secondary': {
+            borderSize: 0,
             backgroundColor: theme.secondary,
             hovered: {
                 backgroundColor: theme.secondaryHovered,
@@ -120,6 +122,8 @@ export const Button = forwardRef<
     // TK: somehow default props should be integrated here
 
     let propsMerged = {
+        ...theme,
+        ...variant,
         ...props,
         backgroundColor:
             props.backgroundColor ?? theme.backgroundColor ?? variant.backgroundColor,

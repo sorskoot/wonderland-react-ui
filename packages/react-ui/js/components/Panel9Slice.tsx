@@ -1,7 +1,8 @@
 import {Object3D, Texture} from '@wonderlandengine/api';
-import React, {forwardRef, useContext, useMemo} from 'react';
+import React, {forwardRef, useContext, useMemo, useState} from 'react';
 import {MaterialContext, FlatMaterial} from './component-types.js';
 import {PanelProps} from './Panel.js';
+import {ThemeContext} from '../theme.js';
 
 /**
  * A 9-slice panel component that renders a textured panel with customizable borders.
@@ -33,19 +34,55 @@ export const Panel9Slice = forwardRef<
     Object3D,
     React.PropsWithChildren<
         PanelProps & {
+            variant?: 'default' | string;
             texture?: Texture | null;
+
+            /**
+             * how thick the visible border is in the mesh's geometry (same units as width/height). It moves the inner quad inwards by this amount on each side.
+             */
             borderSize?: number;
+
+            /**
+             * The normalized size (0..1) of the border area in texture (UV) space.
+             * It controls which part of the texture is sampled for the border vs the center.
+             *
+             * For example, if the texture is 256x256 and the border is 32 pixels wide, this should be set to 32/256 = 0.125.
+             */
             borderTextureSize?: number;
         }
     >
 >((props, ref) => {
     const context = useContext(MaterialContext);
+    let theme = useContext(ThemeContext);
+    let specializedTheme = false;
+    if ('panel9Slice' in theme) {
+        theme = {...theme, ...theme.panel9Slice};
+        if (props.variant && props.variant in theme.variant) {
+            theme = {...theme, ...theme.variant[props.variant]};
+        }
+        specializedTheme = true;
+    }
+    let mergedProps = {
+        ...theme,
+        ...props,
+        // borderSize: props.borderSize ?? theme.panel9Slice?.borderSize ?? 10,
+        // borderTextureSize:
+        //     props.borderTextureSize ?? theme.panel9Slice?.borderTextureSize ?? 0.33,
+    };
+    // props.borderSize = props.borderSize ?? theme.panel9Slice?.borderSize ?? 10;
+    // props.borderTextureSize =
+    //     props.borderTextureSize ?? theme.panel9Slice?.borderTextureSize ?? 0.33;
+
     const mat = useMemo(() => context.panelMaterialTextured?.clone(), []);
-    if (mat && props.texture) (mat as unknown as FlatMaterial).flatTexture = props.texture;
+    if (mat && (mergedProps.texture || (theme && 'texture' in theme && theme.texture)))
+        (mat as unknown as FlatMaterial).flatTexture = mergedProps.texture ?? theme.texture;
+
     return React.createElement(
         'nineSlice',
-        {...props, material: props.material ?? mat, ref: ref},
-        props.children
+        {...mergedProps, material: mergedProps.material ?? mat, ref: ref},
+        specializedTheme
+            ? React.createElement(ThemeContext.Provider, {value: theme}, props.children)
+            : props.children
     );
 });
 

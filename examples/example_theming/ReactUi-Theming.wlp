@@ -206,7 +206,9 @@
                         ],
                         "panelMaterialTextured": "7",
                         "nineSliceTexture": 1,
-                        "buttonTextMaterial": 7
+                        "buttonTextMaterial": 7,
+                        "diaglogWhite": "89",
+                        "diaglogBlue": "90"
                     }
                 }
             ]
@@ -399,7 +401,7 @@
                 "file": "default"
             },
             "Text": {
-                "font": "55"
+                "font": "57"
             },
             "pipeline": "78"
         },
@@ -738,8 +740,10 @@
             "name": "UI Color Textured",
             "depthFunction": "less or equal",
             "features": {
-                "TEXTURED": true
-            }
+                "TEXTURED": true,
+                "ALPHA_MASKED": true
+            },
+            "sampleAlphaToCoverage": true
         },
         "78": {
             "link": {
@@ -897,6 +901,18 @@
                 "name": "9-slice-texture.png",
                 "file": "assets\\9-slice-texture.png"
             }
+        },
+        "89": {
+            "link": {
+                "name": "button_square_depth_line.png",
+                "file": "assets\\button_square_depth_line.png"
+            }
+        },
+        "90": {
+            "link": {
+                "name": "button_square_depth_flat.png",
+                "file": "assets\\button_square_depth_flat.png"
+            }
         }
     },
     "images": {
@@ -906,6 +922,18 @@
                 "file": "assets\\9-slice-texture.png"
             },
             "compression": "none"
+        },
+        "88": {
+            "link": {
+                "name": "button_square_depth_line.png",
+                "file": "assets\\button_square_depth_line.png"
+            }
+        },
+        "89": {
+            "link": {
+                "name": "button_square_depth_flat.png",
+                "file": "assets\\button_square_depth_flat.png"
+            }
         }
     },
     "fonts": {
@@ -921,6 +949,13 @@
                 "file": "assets\\Bigbesty.ttf"
             },
             "outline": true
+        },
+        "57": {
+            "link": {
+                "name": "font_0",
+                "file": "assets\\Kenney Future.ttf"
+            },
+            "outline": false
         }
     },
     "languages": {},
@@ -931,6 +966,18 @@
         },
         "90": {
             "fileName": "assets/Bigbesty.ttf",
+            "importerName": ""
+        },
+        "91": {
+            "fileName": "assets/button_square_depth_line.png",
+            "importerName": ""
+        },
+        "92": {
+            "fileName": "assets/button_square_depth_flat.png",
+            "importerName": ""
+        },
+        "93": {
+            "fileName": "assets/Kenney Future.ttf",
             "importerName": ""
         }
     },
