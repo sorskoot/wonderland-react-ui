@@ -1,9 +1,16 @@
-import {Object3D, Material} from '@wonderlandengine/api';
-import React, {forwardRef, PropsWithChildren, useContext, useState} from 'react';
-import type {Color, TextProps, YogaNodeProps} from '../renderer-types.js';
+import {Object3D, Material, Texture} from '@wonderlandengine/api';
+import React, {forwardRef, PropsWithChildren, useContext, useMemo, useState} from 'react';
+import type {Color, NineSliceProps, TextProps, YogaNodeProps} from '../renderer-types.js';
 import {Panel} from './Panel.js';
 import {Text} from './Text.js';
-import {colors, ThemeContext} from '../theme.js';
+import {
+    colors,
+    resolveStyle,
+    stripLayoutProps,
+    ThemeContext,
+    ThemeProvider,
+} from '../theme.js';
+import {Panel9Slice} from '../components.js';
 
 /**
  * An interactive button component with hover and active states.
@@ -53,107 +60,143 @@ import {colors, ThemeContext} from '../theme.js';
  * @returns {React.ReactElement} An interactive button element
  */
 
-export const Button = forwardRef<
-    Object3D,
-    PropsWithChildren<
-        {
-            variant?: 'default' | 'secondary';
-            material?: Material;
-            backgroundColor?: Color;
+type buttonBaseProps = {
+    nineSlice?: boolean;
+    variant?: string;
+    material?: Material;
+    backgroundColor?: Color;
 
-            rounding?: number;
-            resolution?: number;
+    rounding?: number;
+    resolution?: number;
 
-            borderSize?: number;
-            borderColor?: Color;
-
-            hovered?: {
-                material?: Material;
-                backgroundColor?: Color;
-                borderSize?: number;
-                borderColor?: Color;
-            };
-
-            active?: {
-                material?: Material;
-                backgroundColor?: Color;
-                borderSize?: number;
-                borderColor?: Color;
-            };
-        } & YogaNodeProps
-    >
->((props, ref) => {
-    const [hovered, setHovered] = useState(false);
-    const [active, setActive] = useState(false);
-
-    let theme = useContext(ThemeContext);
-    let specializedTheme = false;
-    const variants = {
-        'default': {
-            backgroundColor: theme.primary,
-            borderSize: 0,
-            hovered: {
-                backgroundColor: theme.primaryHovered,
-                borderSize: 1,
-            },
-            active: {
-                backgroundColor: theme.primaryActive,
-            },
-        },
-        'secondary': {
-            borderSize: 0,
-            backgroundColor: theme.secondary,
-            hovered: {
-                backgroundColor: theme.secondaryHovered,
-            },
-            active: {
-                backgroundColor: theme.secondaryActive,
-            },
-        },
+    borderSize?: number;
+    borderColor?: Color;
+    hovered?: {
+        material?: Material;
+        backgroundColor?: Color;
+        borderSize?: number;
+        borderColor?: Color;
     };
 
-    const [variant] = useState(() => variants[props.variant ?? 'default']);
-    if ('button' in theme) {
-        //@ts-ignore
-        theme = {...theme, ...theme.button};
-        specializedTheme = true;
-    }
-
-    // TK: somehow default props should be integrated here
-
-    let propsMerged = {
-        ...theme,
-        ...variant,
-        ...props,
-        backgroundColor:
-            props.backgroundColor ?? theme.backgroundColor ?? variant.backgroundColor,
-        ...(hovered ? props.hovered ?? theme.hovered ?? variant.hovered : undefined),
-        ...(active ? props.active ?? theme.active ?? variant.active : undefined),
+    active?: {
+        material?: Material;
+        backgroundColor?: Color;
+        borderSize?: number;
+        borderColor?: Color;
     };
+};
+type buttonPropsNormal = {
+    nineSlice?: false;
+};
+type buttonProps9Slice = NineSliceProps & {
+    nineSlice?: true;
+    hovered?: {
+        texture?: Texture;
+    };
+    active?: {
+        texture?: Texture;
+    };
+};
+type buttonProps = buttonBaseProps & (buttonPropsNormal | buttonProps9Slice);
 
-    const content =
-        typeof props.children === 'string' ? (
-            <Text {...props}>{props.children.toString()}</Text>
-        ) : (
-            props.children
-        );
+export const Button = forwardRef<Object3D, PropsWithChildren<buttonProps & YogaNodeProps>>(
+    (props, ref) => {
+        const [hovered, setHovered] = useState(false);
+        const [active, setActive] = useState(false);
 
-    return (
-        <Panel
-            {...propsMerged}
-            onHover={() => setHovered(true)}
-            onUnhover={() => setHovered(false)}
-            onDown={() => setActive(true)}
-            onUp={() => setActive(false)}
-            ref={ref}
-        >
-            {specializedTheme ? (
-                <ThemeContext.Provider value={theme}>{content}</ThemeContext.Provider>
+        let theme = useContext(ThemeContext);
+        let specializedTheme = false;
+        const variants = {
+            'default': {
+                backgroundColor: theme.primary,
+                borderSize: 0,
+                hovered: {
+                    backgroundColor: theme.primaryHovered,
+                    borderSize: 1,
+                },
+                active: {
+                    backgroundColor: theme.primaryActive,
+                },
+            },
+            'secondary': {
+                borderSize: 0,
+                backgroundColor: theme.secondary,
+                hovered: {
+                    backgroundColor: theme.secondaryHovered,
+                },
+                active: {
+                    backgroundColor: theme.secondaryActive,
+                },
+            },
+        };
+        const propsMerged = resolveStyle({
+            theme,
+            variant: props.variant,
+            variants: {},
+            props,
+            states: {hovered, active},
+            specializeKey: 'button',
+        });
+
+        // // const mergedStyles = resolveStyle({
+        // //     theme,
+        // //     props,
+        // //     variant: props.variant ?? 'default',
+        // //     variants,
+        // //     states: {hovered, active},
+        // // });
+
+        // const [variant] = useState(() => variants[props.variant ?? 'default']);
+        // // if ('button' in theme) {
+        // //     //@ts-ignore
+        // //     theme = {...theme, ...theme.button};
+        // //     specializedTheme = true;
+        // // }
+
+        // // // TK: somehow default props should be integrated here
+
+        // let propsMerged = {
+        //     ...props,
+        //     backgroundColor:
+        //         props.backgroundColor ?? theme.backgroundColor ?? variant.backgroundColor,
+        //     ...(hovered ? props.hovered ?? theme.hovered ?? variant.hovered : undefined),
+        //     ...(active ? props.active ?? theme.active ?? variant.active : undefined),
+        // };
+
+        const content =
+            typeof props.children === 'string' ? (
+                <Text {...props}>{props.children.toString()}</Text>
             ) : (
-                content
-            )}
-        </Panel>
-    );
-});
+                props.children
+            );
+        // Decide which Panel component to render.
+        // If props.nineSlice is truthy we render Panel9Slice, passing the nineSlice object through.
+
+        const PanelComponent: React.ComponentType<any> = propsMerged.nineSlice
+            ? Panel9Slice
+            : Panel;
+
+        // // If using 9-slice, fold nineSlice-specific props into propsMerged so Panel9Slice can pick them up.
+        // if (useNineSlice && typeof props.nineSlice === 'object') {
+        //     propsMerged = {...propsMerged, ...props.nineSlice} as any;
+        // }
+        return (
+            <PanelComponent
+                {...propsMerged}
+                onHover={() => setHovered(true)}
+                onUnhover={() => setHovered(false)}
+                onDown={() => setActive(true)}
+                onUp={() => setActive(false)}
+                ref={ref}
+            >
+                {/* {specializedTheme ? (
+                <ThemeProvider theme={stripLayoutProps(theme)}>{content}</ThemeProvider>
+            ) : ( */}
+                {content}
+                {/* )} */}
+            </PanelComponent>
+        );
+    }
+);
 
 Button.displayName = 'Button';

@@ -206,7 +206,7 @@
                         ],
                         "panelMaterialTextured": "7",
                         "nineSliceTexture": "88",
-                        "buttonTextMaterial": "82"
+                        "buttonTextMaterial": 7
                     }
                 }
             ]
@@ -927,10 +927,6 @@
     "files": {
         "89": {
             "fileName": "assets/9-slice-texture.png",
-            "importerName": ""
-        },
-        "90": {
-            "fileName": "assets/Bigbesty.ttf",
             "importerName": ""
         }
     },

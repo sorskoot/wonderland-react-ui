@@ -20,7 +20,7 @@ import {
     Panel9Slice,
     Container,
 } from '@wonderlandengine/react-ui/components';
-import React, {useEffect, useState} from 'react';
+import React, {act, useEffect, useState} from 'react';
 
 const App = (props: {comp: ReactUi}) => {
     const comp = props.comp;
@@ -44,43 +44,63 @@ const App = (props: {comp: ReactUi}) => {
     );
 
     const theme = {
-        //colors: {
-        // background: comp.panelSecondary,
-        primary: '#1b9ed9',
-        secondary: '#1b9ed9',
-        // primaryActive: comp.panelSecondaryActive,
-        // primaryHovered: comp.panelSecondaryHovered,
-        // borderPrimary: 0,
-        // borderPrimaryActive: 0,
-        // borderPrimaryHovered: 0xffffffff,
-        textColor: '#1b9ed9',
-        //},
-        button: {
-            padding: 8,
-            height: 40,
-            text: {
-                fontSize: 16,
+        primaryColor: '#1b9ed9',
+        color: '#1b9ed9',
+        fontSize: 24,
+        components: {
+            panel9Slice: {
+                borderSize: 16, // in world units
+                borderTextureSize: 0.25,
+                padding: 16,
             },
-            hovered: {
-                backgroundColor: '#1b9ed9',
+            button: {
+                height: 40,
+                padding: 8,
+                nineSlice: true,
+                borderSize: 16, // in world units
+                borderTextureSize: 0.25,
+                texture: comp.buttonBlue,
+                justifyContent: Justify.Center,
+                alignItems: Align.Center,
+                hovered: {
+                    texture: comp.buttonBlueHover,
+                },
+                active: {
+                    texture: comp.buttonBlue,
+                },
                 text: {
-                    textColor: '#ffffff',
+                    fontSize: 16,
                 },
             },
         },
-        fontSize: 24,
-        panel9Slice: {
-            borderSize: 16, // in world units
-            borderTextureSize: 0.25,
-            padding: 16,
-            variant: {
-                'header': {
-                    texture: comp.diaglogBlue,
-                    justifyContent: Justify.Center,
-                    alignItems: Align.Center,
-                    text: {textColor: '#ffffff'},
+        variants: {
+            'header': {
+                components: {
+                    panel9Slice: {
+                        texture: comp.diaglogBlue,
+                        justifyContent: Justify.Center,
+                        alignItems: Align.Center,
+                    },
+                    text: {color: '#ffffff'},
                 },
-                'body': {texture: comp.diaglogWhite},
+            },
+            'body': {
+                components: {
+                    panel9Slice: {texture: comp.diaglogWhite},
+                },
+            },
+            'secondary': {
+                components: {
+                    button: {
+                        texture: comp.buttonWhite,
+                        hovered: {
+                            texture: comp.buttonWhiteHover,
+                        },
+                        active: {
+                            texture: comp.buttonWhite,
+                        },
+                    },
+                },
             },
         },
     };
@@ -94,23 +114,26 @@ const App = (props: {comp: ReactUi}) => {
                     justifyContent={Justify.Center}
                 >
                     <Panel9Slice variant="header" width={500} height={64}>
-                        <Text>This is the header</Text>
+                        <Text variant="header">This is the header</Text>
                     </Panel9Slice>
                     <Panel9Slice variant="body" width={500} height={400} gap={16}>
                         <Text>This is the body</Text>
-                        <Button variant="default">Primary Button</Button>
-                        <Button variant="secondary">Secondary Button</Button>
+                        <Button variant="default">
+                            <Text fontSize={16} color="#ffffff">
+                                Primary Button
+                            </Text>
+                        </Button>
+                        <Button variant="secondary">
+                            <Text fontSize={16}>Secondary Button</Text>
+                        </Button>
+                        <Image
+                            borderColor={theme.primaryColor}
+                            src="Orange-grumpy-cat-.jpg"
+                            width="100%"
+                            flexGrow={1}
+                            borderSize={2}
+                        />
                     </Panel9Slice>
-                </Container>
-            </ThemeProvider>
-        </MaterialContext.Provider>
-    );
-};
-
-/**
-                        width={500}
-                        height={400}
-                    ></Panel9Slice>
                 </Container>
             </ThemeProvider>
         </MaterialContext.Provider>
@@ -129,6 +152,18 @@ export class ReactUi extends ReactUiBase {
 
     @property.texture()
     diaglogBlue?: Texture;
+
+    @property.texture()
+    buttonBlue?: Texture;
+
+    @property.texture()
+    buttonBlueHover?: Texture;
+
+    @property.texture()
+    buttonWhite?: Texture;
+
+    @property.texture()
+    buttonWhiteHover?: Texture;
 
     render() {
         return <App comp={this} />;

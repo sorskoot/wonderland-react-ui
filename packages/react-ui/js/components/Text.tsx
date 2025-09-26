@@ -3,7 +3,7 @@ import React, {forwardRef, PropsWithChildren, useContext, useMemo} from 'react';
 import type {TextProps, Color} from '../renderer-types.js';
 import {parseColor} from '../utils.js';
 import {MaterialContext, FlatMaterial} from './component-types.js';
-import {ThemeContext} from '../theme.js';
+import {resolveStyle, ThemeContext} from '../theme.js';
 
 const tempColor = new Float32Array(4);
 /**
@@ -36,16 +36,30 @@ export const Text = forwardRef<
     PropsWithChildren<
         TextProps & {
             color?: Color;
+            variant?: string;
         }
     >
 >((props, ref) => {
     const context = useContext(MaterialContext);
     let theme = useContext(ThemeContext);
 
-    if ('text' in theme) {
-        //@ts-ignore
-        theme = {...theme, ...theme.text};
-    }
+    // if ('text' in theme) {
+    //     //@ts-ignore
+    //     theme = {...theme, ...theme.text};
+    // }
+    let mergedProps = resolveStyle({
+        theme,
+        props,
+        variant: props.variant,
+        variants: {},
+        states: {},
+        specializeKey: 'text',
+    });
+    // let mergedProps = {
+    //     ...theme,
+    //     ...(props.variant ? theme.variants?.[props.variant] : {}),
+    //     ...props,
+    // };
 
     const mat =
         props.material ??
@@ -54,11 +68,9 @@ export const Text = forwardRef<
     if (mat) {
         (mat as unknown as FlatMaterial).setColor(
             parseColor(
-                props.color ??
-                    theme.textColor ??
+                mergedProps.color ??
                     (
-                        (props.material ??
-                            theme.textMaterial ??
+                        (mergedProps.material ??
                             context.textMaterial) as unknown as FlatMaterial
                     ).color,
                 tempColor
@@ -66,8 +78,8 @@ export const Text = forwardRef<
         );
     }
     return React.createElement('text3d', {
-        ...props,
-        fontSize: props.fontSize ?? theme.fontSize ?? 32,
+        ...mergedProps,
+        fontSize: mergedProps.fontSize ?? 32,
         material: mat,
         text: props.children?.toString() ?? props.text,
         ref: ref,
