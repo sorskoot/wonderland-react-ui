@@ -1,7 +1,8 @@
 import {Object3D, Texture} from '@wonderlandengine/api';
 import React, {forwardRef, useContext, useMemo} from 'react';
 import {MaterialContext, FlatMaterial} from './component-types.js';
-import {Panel, PanelProps} from './Panel.js';
+import {Panel} from './Panel.js';
+import {PanelProps} from '../renderer-types.js';
 
 /**
  * An Image component that renders a textured panel with an image source.

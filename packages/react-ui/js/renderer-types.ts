@@ -100,6 +100,16 @@ export interface TextProps extends YogaNodeProps {
     textWrap?: 'none' | 'soft' | 'hard' | 'clip';
 }
 
+export interface PanelProps extends YogaNodeProps {
+    material?: Material | null;
+    borderMaterial?: Material | null;
+    rounding?: number;
+    resolution?: number;
+    backgroundColor?: Color;
+    borderColor?: Color;
+    borderSize?: number;
+}
+
 export interface RoundedRectangleProps extends YogaNodeProps {
     /* Material for the rounded rectangle mesh */
     material?: Material | null;

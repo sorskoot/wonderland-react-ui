@@ -28,6 +28,7 @@ export type {
     MeshProps,
     NineSliceProps,
     ReactComp,
+    PanelProps,
 } from './renderer-types.js';
 
 /* These are used by props */

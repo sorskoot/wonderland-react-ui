@@ -2,19 +2,9 @@ import {Material, Object3D} from '@wonderlandengine/api';
 import React, {forwardRef, useContext, useMemo} from 'react';
 import {parseColor} from '../utils.js';
 import {MaterialContext, FlatMaterial} from './component-types.js';
-import {YogaNodeProps, Color} from '../renderer-types.js';
+import {YogaNodeProps, Color, PanelProps} from '../renderer-types.js';
 
 const tempColor = new Float32Array(4);
-
-export interface PanelProps extends YogaNodeProps {
-    material?: Material | null;
-    borderMaterial?: Material | null;
-    rounding?: number;
-    resolution?: number;
-    backgroundColor?: Color;
-    borderColor?: Color;
-    borderSize?: number;
-}
 
 /**
  * A React component that renders a rounded rectangle panel with customizable appearance.

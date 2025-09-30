@@ -1,7 +1,7 @@
 import {Object3D, Texture} from '@wonderlandengine/api';
 import React, {forwardRef, useContext, useMemo} from 'react';
 import {MaterialContext, FlatMaterial} from './component-types.js';
-import {PanelProps} from './Panel.js';
+import {PanelProps} from '../renderer-types.js';
 
 /**
  * A 9-slice panel component that renders a textured panel with customizable borders.
