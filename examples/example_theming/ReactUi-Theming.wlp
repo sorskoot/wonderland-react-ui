@@ -212,7 +212,9 @@
                         "buttonWhite": "94",
                         "buttonBlue": "93",
                         "buttonBlueHover": "95",
-                        "buttonWhiteHover": "96"
+                        "buttonWhiteHover": "96",
+                        "progressBarForeground": "98",
+                        "progressBarBackground": "97"
                     }
                 }
             ]
@@ -953,6 +955,18 @@
                 "name": "button_square_border-Hover.png",
                 "file": "assets\\button_square_border-Hover.png"
             }
+        },
+        "97": {
+            "link": {
+                "name": "button_round_depth_border.png",
+                "file": "assets\\button_round_depth_border.png"
+            }
+        },
+        "98": {
+            "link": {
+                "name": "button_round_gloss.png",
+                "file": "assets\\button_round_gloss.png"
+            }
         }
     },
     "images": {
@@ -1009,6 +1023,18 @@
             "link": {
                 "name": "button_square_border-Hover.png",
                 "file": "assets\\button_square_border-Hover.png"
+            }
+        },
+        "96": {
+            "link": {
+                "name": "button_round_depth_border.png",
+                "file": "assets\\button_round_depth_border.png"
+            }
+        },
+        "97": {
+            "link": {
+                "name": "button_round_gloss.png",
+                "file": "assets\\button_round_gloss.png"
             }
         }
     },
@@ -1078,6 +1104,14 @@
         },
         "99": {
             "fileName": "assets/button_square_border-Hover.png",
+            "importerName": ""
+        },
+        "100": {
+            "fileName": "assets/button_round_depth_border.png",
+            "importerName": ""
+        },
+        "101": {
+            "fileName": "assets/button_round_gloss.png",
             "importerName": ""
         }
     },

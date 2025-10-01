@@ -132,7 +132,6 @@ export const Button = forwardRef<Object3D, PropsWithChildren<buttonProps & YogaN
         const propsMerged = resolveStyle({
             theme,
             variant: props.variant,
-            variants: {},
             props,
             states: {hovered, active},
             specializeKey: 'button',

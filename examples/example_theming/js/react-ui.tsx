@@ -109,13 +109,30 @@ const App = (props: {comp: ReactUi}) => {
         <MaterialContext.Provider value={props.comp}>
             <ThemeProvider theme={theme}>
                 <Container
+                    width={500}
                     alignContent={Align.SpaceAround}
                     alignItems={Align.Center}
                     justifyContent={Justify.Center}
                 >
-                    <Panel9Slice variant="header" width={500} height={64}>
+                    <Panel9Slice variant="header" width="100%" height={64}>
                         <Text variant="header">This is the header</Text>
                     </Panel9Slice>
+                    <ProgressBar
+                        nineSlice={true}
+                        fgTexture={comp.progressBarForeground}
+                        bgTexture={comp.progressBarBackground}
+                        borderSize={16} // in world units
+                        borderTextureSize={0.5}
+                        // bgColor={theme.primaryColor}
+                        // fgColor="#440044"
+                        value={0.5}
+                        height={50}
+                        width="100%"
+                    >
+                        <Text variant="header" fontSize={13} top={3}>
+                            progress
+                        </Text>
+                    </ProgressBar>
                     <Panel9Slice variant="body" width={500} height={400} gap={16}>
                         <Text>This is the body</Text>
                         <Button variant="default">
@@ -164,6 +181,12 @@ export class ReactUi extends ReactUiBase {
 
     @property.texture()
     buttonWhiteHover?: Texture;
+
+    @property.texture()
+    progressBarBackground?: Texture;
+
+    @property.texture()
+    progressBarForeground?: Texture;
 
     render() {
         return <App comp={this} />;

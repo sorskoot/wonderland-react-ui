@@ -1,9 +1,37 @@
-import {Object3D, Material} from '@wonderlandengine/api';
-import React, {forwardRef} from 'react';
-import {FlexDirection, Align, PositionType} from '../renderer.js';
-import type {YogaNodeProps, Color} from '../renderer-types.js';
+import {Object3D, Material, Texture} from '@wonderlandengine/api';
+import React, {forwardRef, useContext} from 'react';
+import {FlexDirection, Align, PositionType, Justify} from '../renderer.js';
+import type {YogaNodeProps, Color, NineSliceProps} from '../renderer-types.js';
 import {Container} from './Container.js';
 import {Panel} from './Panel.js';
+import {resolveStyle, ThemeContext} from '../theme.js';
+import {Panel9Slice} from './Panel9Slice.js';
+
+type ProgressBarBaseProps = YogaNodeProps & {
+    nineSlice?: boolean;
+    variant?: string;
+    /* Number between 0-1 */
+    value: number;
+    rounding?: number;
+
+    fgMaterial?: Material;
+    bgMaterial?: Material;
+
+    fgColor?: Color;
+    bgColor?: Color;
+
+    barLeftMargin?: number;
+};
+type ProgressBarPropsNormal = {
+    nineSlice?: false;
+};
+type ProgressBarProps9Slice = NineSliceProps & {
+    nineSlice?: true;
+    fgTexture?: Texture;
+    bgTexture?: Texture;
+};
+export type ProgressBarProps = ProgressBarBaseProps &
+    (ProgressBarPropsNormal | ProgressBarProps9Slice);
 
 /**
  * A progress bar component that displays a value between 0 and 1 as a filled bar.
@@ -23,7 +51,7 @@ import {Panel} from './Panel.js';
  * </ProgressBar>
  * ```
  *
- * @param {YogaNodeProps & Object} props - The progress bar properties
+ * @param {ProgressBarProps} props - The progress bar properties
  * @param {number} props.value - Progress value between 0 and 1 (will be clamped if outside range)
  * @param {number} [props.rounding=30] - Corner rounding radius for the progress bar
  * @param {Material} [props.fgMaterial] - Material for the foreground (filled) bar
@@ -35,60 +63,93 @@ import {Panel} from './Panel.js';
  * @param {React.Ref<Object3D>} ref - Forward ref to access the underlying 3D object
  * @returns {React.ReactElement} A progress bar element
  */
+export const ProgressBar = forwardRef<Object3D, React.PropsWithChildren<ProgressBarProps>>(
+    (props, ref) => {
+        const value = Math.max(Math.min(1, props.value), 0); // clamp between 0 and 1
 
-export const ProgressBar = forwardRef<
-    Object3D,
-    React.PropsWithChildren<
-        YogaNodeProps & {
-            /* Number between 0-1 */
-            value: number;
-            rounding?: number;
+        const theme = useContext(ThemeContext);
 
-            fgMaterial?: Material;
-            bgMaterial?: Material;
+        const propsMerged = resolveStyle({
+            theme,
+            variant: props.variant,
+            props,
+            specializeKey: 'ProgressBar',
+        });
 
-            fgColor?: Color;
-            bgColor?: Color;
+        const rounding = propsMerged.rounding ?? 30;
+        if (!propsMerged.nineSlice) {
+            return (
+                <Panel
+                    material={propsMerged.bgMaterial}
+                    backgroundColor={propsMerged.bgColor}
+                    {...propsMerged}
+                    flexDirection={FlexDirection.Row}
+                    padding={propsMerged.padding ?? 6}
+                    paddingLeft={propsMerged.paddingLeft ?? 8}
+                    paddingRight={propsMerged.paddingRight ?? 8}
+                    resolution={6}
+                    rounding={rounding * 1.5}
+                    ref={ref}
+                >
+                    <Container
+                        alignItems={Align.FlexStart}
+                        position={PositionType.Absolute}
+                        width="100%"
+                        height="100%"
+                        left={propsMerged.barLeftMargin ?? 12}
+                    >
+                        {props.children}
+                    </Container>
 
-            barLeftMargin?: number;
+                    <Panel
+                        width={`${100 * value}%`}
+                        minWidth={rounding * 2}
+                        height="100%"
+                        material={propsMerged.fgMaterial}
+                        backgroundColor={propsMerged.fgColor}
+                        alignItems={Align.Center}
+                        rounding={rounding}
+                    ></Panel>
+                </Panel>
+            );
+        } else {
+            return (
+                <Panel9Slice
+                    texture={propsMerged.bgTexture}
+                    {...propsMerged}
+                    flexDirection={FlexDirection.Row}
+                    padding={propsMerged.padding ?? 8}
+                    paddingLeft={propsMerged.paddingLeft ?? 6}
+                    paddingRight={propsMerged.paddingRight ?? 6}
+                >
+                    <Container
+                        marginTop={8}
+                        alignItems={Align.Center}
+                        position={PositionType.Absolute}
+                        width={`${100 * value}%`}
+                        height="100%"
+                        left={propsMerged.barLeftMargin ?? 12}
+                    >
+                        {props.children}
+                    </Container>
+                    <Panel9Slice
+                        borderSize={propsMerged.fgBorderSize || propsMerged.borderSize || 0}
+                        borderTextureSize={
+                            propsMerged.fgBorderTextureSize || propsMerged.borderTextureSize
+                        }
+                        texture={propsMerged.fgTexture}
+                        width={`${100 * value}%`}
+                        minWidth={rounding * 2}
+                        top={-1}
+                        height="100%"
+                        material={propsMerged.fgMaterial}
+                        backgroundColor={propsMerged.fgColor}
+                        alignItems={Align.Center}
+                        rounding={rounding}
+                    ></Panel9Slice>
+                </Panel9Slice>
+            );
         }
-    >
->((props, ref) => {
-    const rounding = props.rounding ?? 30;
-    const value = Math.max(Math.min(1, props.value), 0); // clamp between 0 and 1
-    return (
-        <Panel
-            material={props.bgMaterial}
-            backgroundColor={props.bgColor}
-            {...props}
-            flexDirection={FlexDirection.Row}
-            padding={props.padding ?? 6}
-            paddingLeft={props.paddingLeft ?? 8}
-            paddingRight={props.paddingRight ?? 8}
-            resolution={6}
-            rounding={rounding * 1.5}
-            ref={ref}
-        >
-            <Container
-                alignItems={Align.FlexStart}
-                position={PositionType.Absolute}
-                width="100%"
-                height="100%"
-                left={props.barLeftMargin ?? 12}
-            >
-                {props.children}
-            </Container>
-
-            <Panel
-                width={`${100 * value}%`}
-                minWidth={rounding * 2}
-                height="100%"
-                material={props.fgMaterial}
-                backgroundColor={props.fgColor}
-                alignItems={Align.Center}
-                rounding={rounding}
-            ></Panel>
-        </Panel>
-    );
-});
+    }
+);
 ProgressBar.displayName = 'ProgressBar';
