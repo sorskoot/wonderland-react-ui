@@ -2,6 +2,11 @@ import React, {createContext, useMemo} from 'react';
 import {Color} from './renderer.js';
 import {Material} from '@wonderlandengine/api';
 
+export type Theme = {[key: string]: any} & {
+    variants?: Record<string, any>;
+    components?: Record<string, any>;
+};
+
 const DefaultTheme = {
     backgroundColor: '#ffffff' as Color,
     color: '#ffffff' as Color,
@@ -28,14 +33,12 @@ DefaultTheme.active = {
     borderColor: DefaultTheme.borderPrimary,
 };
 
-export type Theme = typeof DefaultTheme & {[key: string]: any};
-
 export const colors = DefaultTheme;
 
 export const ThemeContext = createContext<Theme>(DefaultTheme);
 
 export const ThemeProvider: React.FC<{
-    theme?: Partial<Theme>;
+    theme?: Theme;
     children: React.ReactNode;
 }> = ({theme, children}) => {
     const mergedTheme = useMemo(

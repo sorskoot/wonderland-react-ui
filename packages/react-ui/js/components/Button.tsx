@@ -1,6 +1,6 @@
 import {Object3D, Material, Texture} from '@wonderlandengine/api';
 import React, {forwardRef, PropsWithChildren, useContext, useState} from 'react';
-import type {Color, NineSliceProps, YogaNodeProps} from '../renderer-types.js';
+import type {Color, NineSliceProps, TextProps, YogaNodeProps} from '../renderer-types.js';
 import {Panel} from './Panel.js';
 import {Text} from './Text.js';
 import {resolveStyle, ThemeContext, VariantContext, VariantProps} from '../theme.js';
@@ -77,6 +77,9 @@ type buttonBaseProps = VariantProps & {
         borderSize?: number;
         borderColor?: Color;
     };
+    text?: TextProps & {
+        color?: Color;
+    };
 };
 type buttonPropsNormal = {
     nineSlice?: false;
@@ -133,7 +136,7 @@ export const Button = forwardRef<Object3D, PropsWithChildren<buttonProps & YogaN
 
         const content =
             typeof props.children === 'string' ? (
-                <Text {...props}>{props.children.toString()}</Text>
+                <Text {...{...props.text}}>{props.children.toString()}</Text>
             ) : (
                 props.children
             );

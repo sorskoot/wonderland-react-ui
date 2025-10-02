@@ -69,7 +69,7 @@ const theme = {
 
 ## Component-Specific Styling
 
-Define default styles for specific component types using the `components` object:
+Define default styles for specific component types by using the `components` object in the theme. The will make the specified component use the given property values.
 
 ### Panel9Slice Components
 
@@ -77,9 +77,9 @@ Define default styles for specific component types using the `components` object
 const theme = {
     components: {
         panel9Slice: {
-            borderSize: 16,           // Border size in world units
-            borderTextureSize: 0.25,  // Texture border size (0-1)
-            padding: 16,              // Internal padding
+            borderSize: 16,
+            borderTextureSize: 0.25,
+            padding: 16,
         }
     }
 };
@@ -106,11 +106,6 @@ const theme = {
             },
             active: {
                 texture: buttonActiveTexture,
-            },
-            
-            // Nested component styles
-            text: {
-                fontSize: 16,
             },
         }
     }
