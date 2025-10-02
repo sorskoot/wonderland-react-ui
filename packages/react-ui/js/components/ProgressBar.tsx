@@ -80,9 +80,9 @@ export const ProgressBar = forwardRef<Object3D, React.PropsWithChildren<Progress
         if (!propsMerged.nineSlice) {
             return (
                 <Panel
+                    {...propsMerged}
                     material={propsMerged.bgMaterial}
                     backgroundColor={propsMerged.bgColor}
-                    {...propsMerged}
                     flexDirection={FlexDirection.Row}
                     padding={propsMerged.padding ?? 6}
                     paddingLeft={propsMerged.paddingLeft ?? 8}
