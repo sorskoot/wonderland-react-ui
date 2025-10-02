@@ -4,6 +4,8 @@ import {
     CollisionComponent,
     Component,
     Material,
+    PhysXComponent,
+    Shape,
     TextEffect,
     VerticalAlignment,
     ViewComponent,
@@ -1047,6 +1049,9 @@ export abstract class ReactUiBase extends Component implements ReactComp {
             const scaledCenterX = centerX * this.scaling[0];
             const scaledCenterY = -centerY * this.scaling[1]; // Flip Y for Wonderland coords
 
+            if (this.engine.physics) {
+                this._colliderObject.active = false;
+            }
             // Update collider position (center of bounds)
             this._colliderObject.setPositionLocal([
                 scaledCenterX,
@@ -1055,14 +1060,20 @@ export abstract class ReactUiBase extends Component implements ReactComp {
             ]);
 
             // Update extents (half-size)
-            const collision = this._colliderObject.getComponent(CollisionComponent)!;
+
             const extents = new Float32Array(3);
 
             extents[0] = 0.5 * scaledWidth * rootScaling[0]; // Half-width, scaled
             extents[1] = 0.5 * scaledHeight * rootScaling[1]; // Half-height, scaled
             extents[2] = COLLIDER_THICKNESS; // Keep fixed depth
-
-            collision.extents.set(extents);
+            if (this.engine.physics) {
+                const physx = this._colliderObject.getComponent(PhysXComponent)!;
+                physx.extents = extents;
+                this._colliderObject.active = true;
+            } else {
+                const collision = this._colliderObject.getComponent(CollisionComponent)!;
+                collision.extents.set(extents);
+            }
         }
 
         this.needsUpdate = false;
@@ -1127,14 +1138,22 @@ export abstract class ReactUiBase extends Component implements ReactComp {
                     const o = this.engine.scene.addObject(this.object);
                     o.name = 'UIColliderObject';
                     o.addComponent(CursorTarget);
-                    o.addComponent(CollisionComponent, {
-                        collider: Collider.Box,
-                        group: 0xff,
-                    });
+                    if (this.engine.physics) {
+                        o.addComponent(PhysXComponent, {
+                            shape: Shape.Box,
+                            static: true,
+                            group: 0xff,
+                        });
+                    } else {
+                        o.addComponent(CollisionComponent, {
+                            collider: Collider.Box,
+                            group: 0xff,
+                        });
+                    }
                     return o;
                 })();
             const target = this._colliderObject.getComponent(CursorTarget)!;
-            const collision = this._colliderObject.getComponent(CollisionComponent)!;
+
             target.onClick.add(
                 (_, c, e) => {
                     const [x, y] = this.getCursorPosition(c as Cursor);
@@ -1168,17 +1187,29 @@ export abstract class ReactUiBase extends Component implements ReactComp {
             extents[0] *= 0.5 * this.width * this.scaling[0];
             extents[1] *= 0.5 * this.height * this.scaling[1];
             extents[2] = COLLIDER_THICKNESS;
-            collision.extents.set(extents);
-
-            this._colliderObject.setPositionLocal([
-                this.width * 0.5 * this.scaling[0],
-                -this.height * 0.5 * this.scaling[1],
-                0.025,
-            ]);
+            if (this.engine.physics) {
+                this._colliderObject.active = false;
+                const physx = this._colliderObject.getComponent(PhysXComponent)!;
+                physx.extents = extents;
+                this._colliderObject.setPositionLocal([
+                    this.width * 0.5 * this.scaling[0],
+                    -this.height * 0.5 * this.scaling[1],
+                    0.025,
+                ]);
+                this._colliderObject.active = true;
+            } else {
+                const collision = this._colliderObject.getComponent(CollisionComponent)!;
+                collision.extents.set(extents);
+                this._colliderObject.setPositionLocal([
+                    this.width * 0.5 * this.scaling[0],
+                    -this.height * 0.5 * this.scaling[1],
+                    0.025,
+                ]);
+            }
         } else {
             this.engine.onResize.add(this._onViewportResize);
             for (const [k, v] of Object.entries(this.callbacks)) {
-                this.engine.canvas.addEventListener(k, v);
+                this.engine.canvas.addEventListener(k, v, {capture: true});
             }
         }
     }
