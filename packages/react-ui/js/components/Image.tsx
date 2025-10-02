@@ -2,6 +2,7 @@ import {Object3D, Texture} from '@wonderlandengine/api';
 import React, {forwardRef, useContext, useMemo} from 'react';
 import {MaterialContext, FlatMaterial} from './component-types.js';
 import {Panel, PanelProps} from './Panel.js';
+import {VariantProps} from '../theme.js';
 
 /**
  * An Image component that renders a textured panel with an image source.
@@ -27,7 +28,7 @@ import {Panel, PanelProps} from './Panel.js';
 
 export const Image = forwardRef<
     Object3D,
-    React.PropsWithChildren<{src: string | Texture} & PanelProps>
+    React.PropsWithChildren<{src: string | Texture} & VariantProps & PanelProps>
 >((props, ref) => {
     const context = useContext(MaterialContext);
     const mat = props.material ?? useMemo(() => context.panelMaterialTextured?.clone(), []);

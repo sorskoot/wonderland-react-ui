@@ -1,6 +1,7 @@
 import {Object3D} from '@wonderlandengine/api';
 import React, {forwardRef} from 'react';
 import type {YogaNodeProps} from '../renderer-types.js';
+import {VariantProps, wrapWithVariantProvider} from '../index.js';
 
 /**
  * A React component that creates a container element with Yoga layout properties.
@@ -22,9 +23,15 @@ import type {YogaNodeProps} from '../renderer-types.js';
  * @param {React.Ref<Object3D>} ref - Forward ref to access the underlying 3D object
  * @returns {React.ReactElement} A container element with the specified layout properties
  */
-export const Container = forwardRef<Object3D, React.PropsWithChildren<YogaNodeProps>>(
-    (props, ref) => {
-        return React.createElement('container', {...props, ref: ref}, props.children);
-    }
-);
+export const Container = forwardRef<
+    Object3D,
+    React.PropsWithChildren<YogaNodeProps & VariantProps>
+>((props, ref) => {
+    const container = React.createElement(
+        'container',
+        {...props, ref: ref},
+        props.children
+    );
+    return wrapWithVariantProvider(props.variant, container);
+});
 Container.displayName = 'Container';

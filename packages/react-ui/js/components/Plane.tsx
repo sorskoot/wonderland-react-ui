@@ -1,6 +1,7 @@
 import {Object3D} from '@wonderlandengine/api';
 import React, {forwardRef} from 'react';
 import type {MeshProps} from '../renderer-types.js';
+import {VariantProps, wrapWithVariantProvider} from '../index.js';
 
 /**
  * A simple mesh plane component for rendering flat surfaces in 3D space.
@@ -23,8 +24,10 @@ import type {MeshProps} from '../renderer-types.js';
  * @returns {React.ReactElement} A mesh plane element
  */
 
-export const Plane = forwardRef<Object3D, React.PropsWithChildren<MeshProps>>(
-    (props, ref) => {
-        return React.createElement('mesh', {...props, ref: ref}, props.children);
-    }
-);
+export const Plane = forwardRef<
+    Object3D,
+    React.PropsWithChildren<VariantProps & MeshProps>
+>((props, ref) => {
+    const plane = React.createElement('mesh', {...props, ref: ref}, props.children);
+    return wrapWithVariantProvider(props.variant, plane);
+});

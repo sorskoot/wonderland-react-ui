@@ -4,24 +4,24 @@ import {FlexDirection, Align, PositionType, Justify} from '../renderer.js';
 import type {YogaNodeProps, Color, NineSliceProps} from '../renderer-types.js';
 import {Container} from './Container.js';
 import {Panel} from './Panel.js';
-import {resolveStyle, ThemeContext} from '../theme.js';
+import {resolveStyle, ThemeContext, VariantContext, VariantProps} from '../theme.js';
 import {Panel9Slice} from './Panel9Slice.js';
 
-type ProgressBarBaseProps = YogaNodeProps & {
-    nineSlice?: boolean;
-    variant?: string;
-    /* Number between 0-1 */
-    value: number;
-    rounding?: number;
+type ProgressBarBaseProps = YogaNodeProps &
+    VariantProps & {
+        nineSlice?: boolean;
+        /* Number between 0-1 */
+        value: number;
+        rounding?: number;
 
-    fgMaterial?: Material;
-    bgMaterial?: Material;
+        fgMaterial?: Material;
+        bgMaterial?: Material;
 
-    fgColor?: Color;
-    bgColor?: Color;
+        fgColor?: Color;
+        bgColor?: Color;
 
-    barLeftMargin?: number;
-};
+        barLeftMargin?: number;
+    };
 type ProgressBarPropsNormal = {
     nineSlice?: false;
 };
@@ -71,7 +71,7 @@ export const ProgressBar = forwardRef<Object3D, React.PropsWithChildren<Progress
 
         const propsMerged = resolveStyle({
             theme,
-            variant: props.variant,
+            variant: props.variant ?? useContext(VariantContext),
             props,
             specializeKey: 'ProgressBar',
         });

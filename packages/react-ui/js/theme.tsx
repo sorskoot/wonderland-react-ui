@@ -1,4 +1,4 @@
-import {createContext, useMemo} from 'react';
+import React, {createContext, useMemo} from 'react';
 import {Color} from './renderer.js';
 import {Material} from '@wonderlandengine/api';
 import type {YogaNodeProps} from './renderer-types.js'; // if placed elsewhere, import the type
@@ -217,4 +217,19 @@ export function stripLayoutProps<T extends Record<string, any>>(
         if (k in out) delete out[k as string];
     }
     return out;
+}
+
+// TK TODO:
+//  - Move to separate file
+//  - Maybe allow multiple variants, like CSS classes?
+export type VariantProps = {variant?: string};
+export const VariantContext = createContext<string | undefined>(undefined);
+export const VariantContextProvider = VariantContext.Provider;
+export function wrapWithVariantProvider(
+    variant: string | undefined,
+    node: React.ReactNode
+) {
+    return variant == null
+        ? node
+        : React.createElement(VariantContext.Provider, {value: variant}, node);
 }

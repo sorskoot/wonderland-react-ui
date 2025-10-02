@@ -9,6 +9,8 @@ import {
     stripLayoutProps,
     ThemeContext,
     ThemeProvider,
+    VariantContext,
+    VariantProps,
 } from '../theme.js';
 import {Panel9Slice} from '../components.js';
 
@@ -60,9 +62,8 @@ import {Panel9Slice} from '../components.js';
  * @returns {React.ReactElement} An interactive button element
  */
 
-type buttonBaseProps = {
+type buttonBaseProps = VariantProps & {
     nineSlice?: boolean;
-    variant?: string;
     material?: Material;
     backgroundColor?: Color;
 
@@ -105,6 +106,7 @@ export const Button = forwardRef<Object3D, PropsWithChildren<buttonProps & YogaN
         const [active, setActive] = useState(false);
 
         let theme = useContext(ThemeContext);
+
         let specializedTheme = false;
         const variants = {
             'default': {
@@ -131,7 +133,7 @@ export const Button = forwardRef<Object3D, PropsWithChildren<buttonProps & YogaN
         };
         const propsMerged = resolveStyle({
             theme,
-            variant: props.variant,
+            variant: props.variant ?? useContext(VariantContext),
             props,
             states: {hovered, active},
             specializeKey: 'button',

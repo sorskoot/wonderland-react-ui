@@ -3,6 +3,7 @@ import React, {forwardRef} from 'react';
 import {FlexDirection} from '../renderer.js';
 import type {YogaNodeProps} from '../renderer-types.js';
 import {Container} from './Container.js';
+import {VariantProps} from '../theme.js';
 
 /**
  * A container component that arranges children in a horizontal row layout.
@@ -24,14 +25,15 @@ import {Container} from './Container.js';
  * @returns {React.ReactElement} A container with row layout
  */
 
-export const Row = forwardRef<Object3D, React.PropsWithChildren<YogaNodeProps>>(
-    (props, ref) => {
-        return (
-            <Container flexDirection={FlexDirection.Row} {...props} ref={ref}>
-                {props.children}
-            </Container>
-        );
-    }
-);
+export const Row = forwardRef<
+    Object3D,
+    React.PropsWithChildren<YogaNodeProps & VariantProps>
+>((props, ref) => {
+    return (
+        <Container flexDirection={FlexDirection.Row} {...props} ref={ref}>
+            {props.children}
+        </Container>
+    );
+});
 
 Row.displayName = 'Row';

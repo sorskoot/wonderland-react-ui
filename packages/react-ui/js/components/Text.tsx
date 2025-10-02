@@ -3,7 +3,13 @@ import React, {forwardRef, PropsWithChildren, useContext, useMemo} from 'react';
 import type {TextProps, Color} from '../renderer-types.js';
 import {parseColor} from '../utils.js';
 import {MaterialContext, FlatMaterial} from './component-types.js';
-import {resolveStyle, ThemeContext} from '../theme.js';
+import {
+    resolveStyle,
+    ThemeContext,
+    VariantContext,
+    VariantProps,
+    wrapWithVariantProvider,
+} from '../theme.js';
 
 const tempColor = new Float32Array(4);
 /**
@@ -34,10 +40,10 @@ const tempColor = new Float32Array(4);
 export const Text = forwardRef<
     Object3D,
     PropsWithChildren<
-        TextProps & {
-            color?: Color;
-            variant?: string;
-        }
+        TextProps &
+            VariantProps & {
+                color?: Color;
+            }
     >
 >((props, ref) => {
     const context = useContext(MaterialContext);
@@ -50,7 +56,7 @@ export const Text = forwardRef<
     let mergedProps = resolveStyle({
         theme,
         props,
-        variant: props.variant,
+        variant: props.variant ?? useContext(VariantContext),
         variants: {},
         states: {},
         specializeKey: 'text',
@@ -77,13 +83,15 @@ export const Text = forwardRef<
             )
         );
     }
-    return React.createElement('text3d', {
+    const text = React.createElement('text3d', {
         ...mergedProps,
         fontSize: mergedProps.fontSize ?? 32,
         material: mat,
         text: props.children?.toString() ?? props.text,
         ref: ref,
     });
+
+    return wrapWithVariantProvider(props.variant, text);
 });
 
 Text.displayName = 'Text';

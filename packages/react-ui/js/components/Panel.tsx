@@ -3,6 +3,13 @@ import React, {forwardRef, useContext, useMemo} from 'react';
 import {parseColor} from '../utils.js';
 import {MaterialContext, FlatMaterial} from './component-types.js';
 import {YogaNodeProps, Color} from '../renderer-types.js';
+import {
+    resolveStyle,
+    ThemeContext,
+    VariantContext,
+    VariantProps,
+    wrapWithVariantProvider,
+} from '../index.js';
 
 const tempColor = new Float32Array(4);
 
@@ -46,31 +53,44 @@ export interface PanelProps extends YogaNodeProps {
  * @returns {React.ReactElement} A rounded rectangle panel element
  */
 
-export const Panel = forwardRef<Object3D, React.PropsWithChildren<PanelProps>>(
-    (props, ref) => {
-        const context = useContext(MaterialContext);
-        const mat = useMemo(() => context.panelMaterial?.clone(), []);
-        mat &&
-            (mat as unknown as FlatMaterial).setColor(
-                parseColor(props.backgroundColor ?? 'fff', tempColor)
-            );
-        const bmat = useMemo(() => context.panelMaterial?.clone(), []);
-        bmat &&
-            (bmat as unknown as FlatMaterial).setColor(
-                parseColor(props.borderColor ?? 'fff', tempColor)
-            );
+export const Panel = forwardRef<
+    Object3D,
+    React.PropsWithChildren<VariantProps & PanelProps>
+>((props, ref) => {
+    const context = useContext(MaterialContext);
+    const theme = useContext(ThemeContext);
+    let mergedProps = resolveStyle({
+        theme,
+        props,
+        variant: props.variant ?? useContext(VariantContext),
+        variants: {},
+        states: {},
+        specializeKey: 'panel9Slice',
+    });
 
-        return React.createElement(
-            'roundedRectangle',
-            {
-                ...props,
-                material: props.material ?? mat,
-                borderMaterial: props.borderMaterial ?? bmat,
-                ref: ref,
-            },
-            props.children
+    const mat = useMemo(() => context.panelMaterial?.clone(), []);
+    mat &&
+        (mat as unknown as FlatMaterial).setColor(
+            parseColor(mergedProps.backgroundColor ?? 'fff', tempColor)
         );
-    }
-);
+    const bmat = useMemo(() => context.panelMaterial?.clone(), []);
+    bmat &&
+        (bmat as unknown as FlatMaterial).setColor(
+            parseColor(mergedProps.borderColor ?? 'fff', tempColor)
+        );
+
+    const panel = React.createElement(
+        'roundedRectangle',
+        {
+            ...mergedProps,
+            material: mergedProps.material ?? mat,
+            borderMaterial: mergedProps.borderMaterial ?? bmat,
+            ref: ref,
+        },
+        props.children
+    );
+
+    return wrapWithVariantProvider(props.variant, panel);
+});
 
 Panel.displayName = 'Panel';

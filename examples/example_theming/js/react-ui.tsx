@@ -115,7 +115,7 @@ const App = (props: {comp: ReactUi}) => {
                     justifyContent={Justify.Center}
                 >
                     <Panel9Slice variant="header" width="100%" height={64}>
-                        <Text variant="header">This is the header</Text>
+                        <Text>This is the header</Text>
                     </Panel9Slice>
                     <ProgressBar
                         nineSlice={true}

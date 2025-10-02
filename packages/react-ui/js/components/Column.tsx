@@ -3,6 +3,7 @@ import React, {forwardRef} from 'react';
 import {FlexDirection} from '../renderer.js';
 import type {YogaNodeProps} from '../renderer-types.js';
 import {Container} from './Container.js';
+import {VariantProps} from '../theme.js';
 
 /**
  * A container component that arranges children in a vertical column layout.
@@ -24,14 +25,15 @@ import {Container} from './Container.js';
  * @returns {React.ReactElement} A container with column layout
  */
 
-export const Column = forwardRef<Object3D, React.PropsWithChildren<YogaNodeProps>>(
-    (props, ref) => {
-        return (
-            <Container flexDirection={FlexDirection.Column} {...props} ref={ref}>
-                {props.children}
-            </Container>
-        );
-    }
-);
+export const Column = forwardRef<
+    Object3D,
+    React.PropsWithChildren<VariantProps & YogaNodeProps>
+>((props, ref) => {
+    return (
+        <Container flexDirection={FlexDirection.Column} {...props} ref={ref}>
+            {props.children}
+        </Container>
+    );
+});
 
 Column.displayName = 'Column';

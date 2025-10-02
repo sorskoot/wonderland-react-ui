@@ -8,7 +8,11 @@ import {
     Theme,
     ThemeContext,
     ThemeProvider,
+    VariantContext,
+    VariantProps,
+    wrapWithVariantProvider,
 } from '../theme.js';
+import {nineSlice} from './nine-slice.js';
 
 /**
  * A 9-slice panel component that renders a textured panel with customizable borders.
@@ -39,23 +43,23 @@ import {
 export const Panel9Slice = forwardRef<
     Object3D,
     React.PropsWithChildren<
-        PanelProps & {
-            variant?: 'default' | string;
-            texture?: Texture | null;
+        PanelProps &
+            VariantProps & {
+                texture?: Texture | null;
 
-            /**
-             * how thick the visible border is in the mesh's geometry (same units as width/height). It moves the inner quad inwards by this amount on each side.
-             */
-            borderSize?: number;
+                /**
+                 * how thick the visible border is in the mesh's geometry (same units as width/height). It moves the inner quad inwards by this amount on each side.
+                 */
+                borderSize?: number;
 
-            /**
-             * The normalized size (0..1) of the border area in texture (UV) space.
-             * It controls which part of the texture is sampled for the border vs the center.
-             *
-             * For example, if the texture is 256x256 and the border is 32 pixels wide, this should be set to 32/256 = 0.125.
-             */
-            borderTextureSize?: number;
-        }
+                /**
+                 * The normalized size (0..1) of the border area in texture (UV) space.
+                 * It controls which part of the texture is sampled for the border vs the center.
+                 *
+                 * For example, if the texture is 256x256 and the border is 32 pixels wide, this should be set to 32/256 = 0.125.
+                 */
+                borderTextureSize?: number;
+            }
     >
 >((props, ref) => {
     const context = useContext(MaterialContext);
@@ -65,7 +69,7 @@ export const Panel9Slice = forwardRef<
     let mergedProps = resolveStyle({
         theme,
         props,
-        variant: props.variant,
+        variant: props.variant ?? useContext(VariantContext),
         variants: {},
         states: {},
         specializeKey: 'panel9Slice',
@@ -97,7 +101,7 @@ export const Panel9Slice = forwardRef<
     if (mat && (mergedProps.texture || (theme && 'texture' in theme && theme.texture)))
         (mat as unknown as FlatMaterial).flatTexture = mergedProps.texture ?? theme.texture;
 
-    return React.createElement(
+    const nineSlice = React.createElement(
         'nineSlice',
         {
             ...mergedProps,
@@ -107,6 +111,8 @@ export const Panel9Slice = forwardRef<
 
         props.children
     );
+
+    return wrapWithVariantProvider(props.variant, nineSlice);
 });
 
 Panel9Slice.displayName = 'Panel9Slice';
