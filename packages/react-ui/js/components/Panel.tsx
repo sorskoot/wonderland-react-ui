@@ -63,8 +63,6 @@ export const Panel = forwardRef<
         theme,
         props,
         variant: props.variant ?? useContext(VariantContext),
-        variants: {},
-        states: {},
         specializeKey: 'panel9Slice',
     });
 

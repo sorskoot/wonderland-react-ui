@@ -1,17 +1,9 @@
 import {Object3D, Material, Texture} from '@wonderlandengine/api';
-import React, {forwardRef, PropsWithChildren, useContext, useMemo, useState} from 'react';
-import type {Color, NineSliceProps, TextProps, YogaNodeProps} from '../renderer-types.js';
+import React, {forwardRef, PropsWithChildren, useContext, useState} from 'react';
+import type {Color, NineSliceProps, YogaNodeProps} from '../renderer-types.js';
 import {Panel} from './Panel.js';
 import {Text} from './Text.js';
-import {
-    colors,
-    resolveStyle,
-    stripLayoutProps,
-    ThemeContext,
-    ThemeProvider,
-    VariantContext,
-    VariantProps,
-} from '../theme.js';
+import {resolveStyle, ThemeContext, VariantContext, VariantProps} from '../theme.js';
 import {Panel9Slice} from '../components.js';
 
 /**
@@ -139,31 +131,6 @@ export const Button = forwardRef<Object3D, PropsWithChildren<buttonProps & YogaN
             specializeKey: 'button',
         });
 
-        // // const mergedStyles = resolveStyle({
-        // //     theme,
-        // //     props,
-        // //     variant: props.variant ?? 'default',
-        // //     variants,
-        // //     states: {hovered, active},
-        // // });
-
-        // const [variant] = useState(() => variants[props.variant ?? 'default']);
-        // // if ('button' in theme) {
-        // //     //@ts-ignore
-        // //     theme = {...theme, ...theme.button};
-        // //     specializedTheme = true;
-        // // }
-
-        // // // TK: somehow default props should be integrated here
-
-        // let propsMerged = {
-        //     ...props,
-        //     backgroundColor:
-        //         props.backgroundColor ?? theme.backgroundColor ?? variant.backgroundColor,
-        //     ...(hovered ? props.hovered ?? theme.hovered ?? variant.hovered : undefined),
-        //     ...(active ? props.active ?? theme.active ?? variant.active : undefined),
-        // };
-
         const content =
             typeof props.children === 'string' ? (
                 <Text {...props}>{props.children.toString()}</Text>
@@ -172,15 +139,10 @@ export const Button = forwardRef<Object3D, PropsWithChildren<buttonProps & YogaN
             );
         // Decide which Panel component to render.
         // If props.nineSlice is truthy we render Panel9Slice, passing the nineSlice object through.
-
         const PanelComponent: React.ComponentType<any> = propsMerged.nineSlice
             ? Panel9Slice
             : Panel;
 
-        // // If using 9-slice, fold nineSlice-specific props into propsMerged so Panel9Slice can pick them up.
-        // if (useNineSlice && typeof props.nineSlice === 'object') {
-        //     propsMerged = {...propsMerged, ...props.nineSlice} as any;
-        // }
         return (
             <PanelComponent
                 {...propsMerged}
@@ -190,11 +152,7 @@ export const Button = forwardRef<Object3D, PropsWithChildren<buttonProps & YogaN
                 onUp={() => setActive(false)}
                 ref={ref}
             >
-                {/* {specializedTheme ? (
-                <ThemeProvider theme={stripLayoutProps(theme)}>{content}</ThemeProvider>
-            ) : ( */}
                 {content}
-                {/* )} */}
             </PanelComponent>
         );
     }

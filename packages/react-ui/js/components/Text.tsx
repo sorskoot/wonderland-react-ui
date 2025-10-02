@@ -49,23 +49,12 @@ export const Text = forwardRef<
     const context = useContext(MaterialContext);
     let theme = useContext(ThemeContext);
 
-    // if ('text' in theme) {
-    //     //@ts-ignore
-    //     theme = {...theme, ...theme.text};
-    // }
     let mergedProps = resolveStyle({
         theme,
         props,
         variant: props.variant ?? useContext(VariantContext),
-        variants: {},
-        states: {},
         specializeKey: 'text',
     });
-    // let mergedProps = {
-    //     ...theme,
-    //     ...(props.variant ? theme.variants?.[props.variant] : {}),
-    //     ...props,
-    // };
 
     const mat =
         props.material ??

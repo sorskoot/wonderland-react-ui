@@ -1,18 +1,14 @@
 import {Object3D, Texture} from '@wonderlandengine/api';
-import React, {forwardRef, useContext, useMemo, useState} from 'react';
+import React, {forwardRef, useContext, useMemo} from 'react';
 import {MaterialContext, FlatMaterial} from './component-types.js';
 import {PanelProps} from './Panel.js';
 import {
     resolveStyle,
-    stripLayoutProps,
-    Theme,
     ThemeContext,
-    ThemeProvider,
     VariantContext,
     VariantProps,
     wrapWithVariantProvider,
 } from '../theme.js';
-import {nineSlice} from './nine-slice.js';
 
 /**
  * A 9-slice panel component that renders a textured panel with customizable borders.
@@ -65,37 +61,12 @@ export const Panel9Slice = forwardRef<
     const context = useContext(MaterialContext);
     let theme = useContext(ThemeContext);
 
-    // let specializedTheme = !!theme.panel9Slice;
     let mergedProps = resolveStyle({
         theme,
         props,
         variant: props.variant ?? useContext(VariantContext),
-        variants: {},
-        states: {},
         specializeKey: 'panel9Slice',
     });
-
-    // let mergedProps = {
-    //     ...theme,
-    //     ...(props.variant ? theme.variants?.[props.variant] : {}),
-    //     ...props,
-    // };
-
-    // if ('panel9Slice' in theme) {
-    //     theme = {...theme, ...theme.panel9Slice};
-    //     if (props.variant && props.variant in theme.variant) {
-    //         theme = {...theme, ...theme.variant[props.variant]};
-    //     }
-    //     specializedTheme = true;
-    // }
-
-    //     // borderSize: props.borderSize ?? theme.panel9Slice?.borderSize ?? 10,
-    //     // borderTextureSize:
-    //     //     props.borderTextureSize ?? theme.panel9Slice?.borderTextureSize ?? 0.33,
-    // };
-    // props.borderSize = props.borderSize ?? theme.panel9Slice?.borderSize ?? 10;
-    // props.borderTextureSize =
-    //     props.borderTextureSize ?? theme.panel9Slice?.borderTextureSize ?? 0.33;
 
     const mat = useMemo(() => context.panelMaterialTextured?.clone(), []);
     if (mat && (mergedProps.texture || (theme && 'texture' in theme && theme.texture)))
