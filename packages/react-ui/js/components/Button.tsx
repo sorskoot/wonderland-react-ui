@@ -136,7 +136,7 @@ export const Button = forwardRef<Object3D, PropsWithChildren<buttonProps & YogaN
 
         const content =
             typeof props.children === 'string' ? (
-                <Text {...{...props.text}}>{props.children.toString()}</Text>
+                <Text {...props.text}>{props.children.toString()}</Text>
             ) : (
                 props.children
             );
