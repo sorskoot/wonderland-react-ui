@@ -4,6 +4,7 @@ import {
     CollisionComponent,
     Component,
     Material,
+    ProjectionType,
     TextEffect,
     VerticalAlignment,
     ViewComponent,
@@ -957,7 +958,13 @@ export abstract class ReactUiBase extends Component implements ReactComp {
         this.width = this._dpiAdjust(this.engine.canvas.clientWidth);
         this.height = this._dpiAdjust(this.engine.canvas.clientHeight);
         this.scaling = [1 / this.width, 1 / this.width];
-        this.object.setPositionLocal(topLeft);
+
+        if (activeView.projectionType == ProjectionType.Orthographic) {
+            this.object.setPositionLocal([topLeft[0], topLeft[1], -2 * activeView.near]);
+        } else {
+            this.object.setPositionLocal(topLeft);
+        }
+
         this.needsUpdate = true;
         this.viewportChanged = true;
     };
