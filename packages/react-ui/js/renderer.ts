@@ -960,7 +960,7 @@ export abstract class ReactUiBase extends Component implements ReactComp {
         this.scaling = [1 / this.width, 1 / this.width];
 
         if (activeView.projectionType == ProjectionType.Orthographic) {
-            this.object.setPositionLocal([topLeft[0], topLeft[1], -2 * activeView.near]);
+            this.object.setPositionLocal([topLeft[0], topLeft[1], -1]);
         } else {
             this.object.setPositionLocal(topLeft);
         }
