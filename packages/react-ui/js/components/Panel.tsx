@@ -63,7 +63,7 @@ export const Panel = forwardRef<
         theme,
         props,
         variant: props.variant ?? useContext(VariantContext),
-        specializeKey: 'panel9Slice',
+        specializeKey: 'panel',
     });
 
     const mat = useMemo(() => context.panelMaterial?.clone(), []);
