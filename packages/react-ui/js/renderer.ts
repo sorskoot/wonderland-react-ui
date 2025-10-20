@@ -1067,7 +1067,7 @@ export abstract class ReactUiBase extends Component implements ReactComp {
 
             extents[0] = 0.5 * scaledWidth * rootScaling[0]; // Half-width, scaled
             extents[1] = 0.5 * scaledHeight * rootScaling[1]; // Half-height, scaled
-            extents[2] = COLLIDER_THICKNESS; // Keep fixed depth
+            extents[2] = COLLIDER_THICKNESS / 2; // Keep fixed depth
 
             collision.extents.set(extents);
         }
@@ -1174,7 +1174,7 @@ export abstract class ReactUiBase extends Component implements ReactComp {
             const extents = this.object.getScalingWorld(new Float32Array(3));
             extents[0] *= 0.5 * this.width * this.scaling[0];
             extents[1] *= 0.5 * this.height * this.scaling[1];
-            extents[2] = COLLIDER_THICKNESS;
+            extents[2] = COLLIDER_THICKNESS / 2; // Keep fixed depth
             collision.extents.set(extents);
 
             this._colliderObject.setPositionLocal([
