@@ -908,7 +908,7 @@ export class Context {
                 if (isNaN(width)) invalids.push(`width=${width}`);
                 if (isNaN(height)) invalids.push(`height=${height}`);
                 throw new Error(
-                    `Context.computeUIBounds: Invalid layout values detected for node tag="${node.tag}"` +
+                    `Context.computeUIBounds: Invalid layout values detected for node tag="${node.tag ?? 'unknown'}"` +
                         ` [${invalids.join(', ')}]`
                 );
             }
