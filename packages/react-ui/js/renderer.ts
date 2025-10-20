@@ -1180,7 +1180,7 @@ export abstract class ReactUiBase extends Component implements ReactComp {
             this._colliderObject.setPositionLocal([
                 this.width * 0.5 * this.scaling[0],
                 -this.height * 0.5 * this.scaling[1],
-                0.025,
+                COLLIDER_THICKNESS / 2,
             ]);
         } else {
             this.engine.onResize.add(this._onViewportResize);
