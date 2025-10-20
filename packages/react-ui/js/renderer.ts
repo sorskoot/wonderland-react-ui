@@ -902,7 +902,15 @@ export class Context {
             const height = node.node.getComputedHeight();
 
             if (isNaN(left) || isNaN(top) || isNaN(width) || isNaN(height)) {
-                throw new Error('Context.computeUIBounds: Invalid layout values detected');
+                const invalids = [];
+                if (isNaN(left)) invalids.push(`left=${left}`);
+                if (isNaN(top)) invalids.push(`top=${top}`);
+                if (isNaN(width)) invalids.push(`width=${width}`);
+                if (isNaN(height)) invalids.push(`height=${height}`);
+                throw new Error(
+                    `Context.computeUIBounds: Invalid layout values detected for node tag="${node.tag}"` +
+                        ` [${invalids.join(', ')}]`
+                );
             }
             minX = Math.min(minX, left);
             maxX = Math.max(maxX, left + width);
