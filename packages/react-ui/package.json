@@ -16,10 +16,9 @@
         "build:dev": "tsc --sourceMap",
         "watch": "tsc --watch --sourceMap",
         "prepack": "npm run build",
-        "test": "npm run build && web-test-runner",
         "test:unit": "vitest --run",
         "test:unit:watch": "vitest",
-        "test:ci": "npm run build && vitest run && web-test-runner"
+        "test:ci": "npm run build && npm run test:unit"
     },
     "files": [
         "dist/**/*.d.ts",
