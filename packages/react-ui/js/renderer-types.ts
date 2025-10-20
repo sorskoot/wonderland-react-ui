@@ -23,7 +23,7 @@ import type {ReactNode} from 'react';
 export type ValueType = number | 'auto' | `${number}%`;
 export type ValueTypeNoAuto = number | `${number}%`;
 export type Color = string | Float32Array | number;
-export type Vec2 = {x: number; y: number} | [number, number];
+export type Vec2 = [number, number];
 
 export interface YogaNodeProps {
     height?: ValueType;

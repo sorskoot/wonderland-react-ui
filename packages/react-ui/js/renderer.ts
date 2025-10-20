@@ -331,31 +331,13 @@ export function applyTextLayout(
             textEffect = TextEffect.None;
             break;
     }
-    let textEffectOffset: [number, number];
-
-    const offset = nodeWrapper.props.textEffectOffset;
-    if (
-        typeof offset === 'object' &&
-        offset !== null &&
-        'x' in offset &&
-        'y' in offset &&
-        typeof offset.x === 'number' &&
-        typeof offset.y === 'number'
-    ) {
-        textEffectOffset = [offset.x, offset.y];
-    } else if (Array.isArray(offset) && offset.length === 2) {
-        textEffectOffset = offset as [number, number];
-    } else {
-        textEffectOffset = [0, 0];
-    }
-
     let textComponent = object.getComponent(TextComponent);
     if (!textComponent) {
         textComponent = object.addComponent(TextComponent, {
             text: nodeWrapper.props.text,
             alignment,
             effect: textEffect,
-            effectOffset: textEffectOffset,
+            effectOffset: nodeWrapper.props.textEffectOffset,
             verticalAlignment: VerticalAlignment.Top,
             wrapMode: textWrapMode,
             material: nodeWrapper.props.material ?? context.comp.textMaterial,
