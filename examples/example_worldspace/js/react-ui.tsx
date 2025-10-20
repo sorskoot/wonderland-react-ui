@@ -86,7 +86,7 @@ const App = (props: {comp: ReactUi}) => {
                             <Text
                                 textEffect="shadow"
                                 textEffectColor="#888888"
-                                textEffectOffset={{x: 0.07, y: -0.07}}
+                                textEffectOffset={[0.07, -0.07]}
                                 fontSize={28}
                             >
                                 Add Item
