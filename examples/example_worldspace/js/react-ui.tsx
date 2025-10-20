@@ -83,7 +83,14 @@ const App = (props: {comp: ReactUi}) => {
                             }}
                             padding={20}
                         >
-                            <Text fontSize={24}>Add Item</Text>
+                            <Text
+                                textEffect="shadow"
+                                textEffectColor="#888888"
+                                textEffectOffset={[0.07, -0.07]}
+                                fontSize={28}
+                            >
+                                Add Item
+                            </Text>
                         </Button>
                         {list.map((label, i) => (
                             <Row
