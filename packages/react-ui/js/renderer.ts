@@ -1099,10 +1099,16 @@ export abstract class ReactUiBase extends Component implements ReactComp {
 
             // Update extents (half-size)
             const extents = new Float32Array(3);
-
             extents[0] = 0.5 * scaledWidth * rootScaling[0]; // Half-width, scaled
             extents[1] = 0.5 * scaledHeight * rootScaling[1]; // Half-height, scaled
             extents[2] = COLLIDER_THICKNESS / 2; // Keep fixed depth
+
+            // Update collider position (center of bounds)
+            this._colliderObject.setPositionLocal([
+                scaledCenterX,
+                scaledCenterY,
+                COLLIDER_THICKNESS / 2,
+            ]);
 
             if (this.engine.physics) {
                 const physx = this._colliderObject.getComponent(PhysXComponent)!;
