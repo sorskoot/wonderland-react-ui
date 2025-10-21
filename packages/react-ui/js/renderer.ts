@@ -124,6 +124,12 @@ const bottomRight = vec3.create();
 
 const tempBBVec4 = new Float32Array(4);
 
+enum RayCastMode {
+    Auto = 0,
+    AlwaysCollider = 1,
+    AlwaysPhysX = 2,
+}
+
 export function computeTextDimensions(
     n: NodeWrapper,
     context: Context
@@ -994,7 +1000,7 @@ export abstract class ReactUiBase extends Component implements ReactComp {
 
     /** Mode for raycasting, whether to use PhysX or simple collision components. Auto uses PhysX if enabled in the project */
     @property.enum(['auto', 'collision', 'physx'], 'auto')
-    rayCastMode: number | string = 0;
+    rayCastMode: RayCastMode = RayCastMode.Auto;
 
     /**
      * Device pixel ratio, defaults to 1. Used on mobile/tablet devices to scale.
@@ -1422,7 +1428,10 @@ export abstract class ReactUiBase extends Component implements ReactComp {
     }
 
     private _usePhysx(): boolean {
-        if (this.rayCastMode === 2 || (this.rayCastMode === 0 && this.engine.physics))
+        if (
+            this.rayCastMode === RayCastMode.AlwaysPhysX ||
+            (this.rayCastMode === RayCastMode.Auto && this.engine.physics)
+        )
             return true;
         return false;
     }
