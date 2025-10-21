@@ -992,6 +992,10 @@ export abstract class ReactUiBase extends Component implements ReactComp {
     @property.int(0xff)
     collisionGroup = 0xff;
 
+    /** Mode for raycasting, whether to use PhysX or simple collision components. Auto uses PhysX if enabled in the project */
+    @property.enum(['auto', 'collision', 'physx'], 'auto')
+    rayCastMode: number | string = 0;
+
     /**
      * Device pixel ratio, defaults to 1. Used on mobile/tablet devices to scale.
      */
@@ -1093,7 +1097,7 @@ export abstract class ReactUiBase extends Component implements ReactComp {
             const scaledCenterX = centerX * this.scaling[0];
             const scaledCenterY = -centerY * this.scaling[1]; // Flip Y for Wonderland coords
 
-            if (this.engine.physics) {
+            if (this._usePhysx()) {
                 this._colliderObject.active = false;
             }
 
@@ -1110,7 +1114,7 @@ export abstract class ReactUiBase extends Component implements ReactComp {
                 COLLIDER_THICKNESS / 2,
             ]);
 
-            if (this.engine.physics) {
+            if (this._usePhysx()) {
                 const physx = this._colliderObject.getComponent(PhysXComponent)!;
                 physx.extents = extents;
                 this._colliderObject.active = true;
@@ -1182,7 +1186,7 @@ export abstract class ReactUiBase extends Component implements ReactComp {
                     const o = this.engine.scene.addObject(this.object);
                     o.name = 'UIColliderObject';
                     o.addComponent(CursorTarget);
-                    if (this.engine.physics) {
+                    if (this._usePhysx()) {
                         o.addComponent(PhysXComponent, {
                             shape: Shape.Box,
                             static: true,
@@ -1230,7 +1234,7 @@ export abstract class ReactUiBase extends Component implements ReactComp {
             extents[0] *= 0.5 * this.width * this.scaling[0];
             extents[1] *= 0.5 * this.height * this.scaling[1];
             extents[2] = COLLIDER_THICKNESS / 2; // Keep fixed depth
-            if (this.engine.physics) {
+            if (this._usePhysx()) {
                 this._colliderObject.active = false;
                 const physx = this._colliderObject.getComponent(PhysXComponent)!;
                 physx.extents = extents;
@@ -1415,6 +1419,12 @@ export abstract class ReactUiBase extends Component implements ReactComp {
 
     private _dpiAdjust(value: number) {
         return value * this.pixelSizeAdjustment * this.dpr;
+    }
+
+    private _usePhysx(): boolean {
+        if (this.rayCastMode === 2 || (this.rayCastMode === 0 && this.engine.physics))
+            return true;
+        return false;
     }
 
     abstract render(): ReactNode;
