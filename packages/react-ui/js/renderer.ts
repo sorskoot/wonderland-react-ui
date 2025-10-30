@@ -4,6 +4,8 @@ import {
     CollisionComponent,
     Component,
     Material,
+    PhysXComponent,
+    Shape,
     ProjectionType,
     TextEffect,
     VerticalAlignment,
@@ -121,6 +123,12 @@ const topLeft = vec3.create();
 const bottomRight = vec3.create();
 
 const tempBBVec4 = new Float32Array(4);
+
+enum RayCastMode {
+    Auto = 0,
+    AlwaysCollider = 1,
+    AlwaysPhysX = 2,
+}
 
 export function computeTextDimensions(
     n: NodeWrapper,
@@ -986,6 +994,14 @@ export abstract class ReactUiBase extends Component implements ReactComp {
     @property.float(1080)
     manualWidth = 1080;
 
+    /** Collision group for the ray cast. Only objects in this group will be affected by this cursor. */
+    @property.int(0xff)
+    collisionGroup = 0xff;
+
+    /** Mode for raycasting, whether to use PhysX or simple collision components. Auto uses PhysX if enabled in the project */
+    @property.enum(['auto', 'collision', 'physx'], 'auto')
+    rayCastMode: RayCastMode = RayCastMode.Auto;
+
     /**
      * Device pixel ratio, defaults to 1. Used on mobile/tablet devices to scale.
      */
@@ -1087,6 +1103,16 @@ export abstract class ReactUiBase extends Component implements ReactComp {
             const scaledCenterX = centerX * this.scaling[0];
             const scaledCenterY = -centerY * this.scaling[1]; // Flip Y for Wonderland coords
 
+            if (this._usePhysx()) {
+                this._colliderObject.active = false;
+            }
+
+            // Update extents (half-size)
+            const extents = new Float32Array(3);
+            extents[0] = 0.5 * scaledWidth * rootScaling[0]; // Half-width, scaled
+            extents[1] = 0.5 * scaledHeight * rootScaling[1]; // Half-height, scaled
+            extents[2] = COLLIDER_THICKNESS / 2; // Keep fixed depth
+
             // Update collider position (center of bounds)
             this._colliderObject.setPositionLocal([
                 scaledCenterX,
@@ -1094,15 +1120,14 @@ export abstract class ReactUiBase extends Component implements ReactComp {
                 COLLIDER_THICKNESS / 2,
             ]);
 
-            // Update extents (half-size)
-            const collision = this._colliderObject.getComponent(CollisionComponent)!;
-            const extents = new Float32Array(3);
-
-            extents[0] = 0.5 * scaledWidth * rootScaling[0]; // Half-width, scaled
-            extents[1] = 0.5 * scaledHeight * rootScaling[1]; // Half-height, scaled
-            extents[2] = COLLIDER_THICKNESS / 2; // Keep fixed depth
-
-            collision.extents.set(extents);
+            if (this._usePhysx()) {
+                const physx = this._colliderObject.getComponent(PhysXComponent)!;
+                physx.extents = extents;
+                this._colliderObject.active = true;
+            } else {
+                const collision = this._colliderObject.getComponent(CollisionComponent)!;
+                collision.extents.set(extents);
+            }
         }
 
         this.needsUpdate = false;
@@ -1167,14 +1192,21 @@ export abstract class ReactUiBase extends Component implements ReactComp {
                     const o = this.engine.scene.addObject(this.object);
                     o.name = 'UIColliderObject';
                     o.addComponent(CursorTarget);
-                    o.addComponent(CollisionComponent, {
-                        collider: Collider.Box,
-                        group: 0xff,
-                    });
+                    if (this._usePhysx()) {
+                        o.addComponent(PhysXComponent, {
+                            shape: Shape.Box,
+                            static: true,
+                            group: this.collisionGroup,
+                        });
+                    } else {
+                        o.addComponent(CollisionComponent, {
+                            collider: Collider.Box,
+                            group: this.collisionGroup,
+                        });
+                    }
                     return o;
                 })();
             const target = this._colliderObject.getComponent(CursorTarget)!;
-            const collision = this._colliderObject.getComponent(CollisionComponent)!;
             target.onClick.add(
                 (_, c, e) => {
                     const [x, y] = this.getCursorPosition(c as Cursor);
@@ -1208,17 +1240,32 @@ export abstract class ReactUiBase extends Component implements ReactComp {
             extents[0] *= 0.5 * this.width * this.scaling[0];
             extents[1] *= 0.5 * this.height * this.scaling[1];
             extents[2] = COLLIDER_THICKNESS / 2; // Keep fixed depth
-            collision.extents.set(extents);
-
-            this._colliderObject.setPositionLocal([
-                this.width * 0.5 * this.scaling[0],
-                -this.height * 0.5 * this.scaling[1],
-                COLLIDER_THICKNESS / 2,
-            ]);
+            if (this._usePhysx()) {
+                this._colliderObject.active = false;
+                const physx = this._colliderObject.getComponent(PhysXComponent)!;
+                physx.extents = extents;
+                this._colliderObject.setPositionLocal([
+                    this.width * 0.5 * this.scaling[0],
+                    -this.height * 0.5 * this.scaling[1],
+                    COLLIDER_THICKNESS / 2,
+                ]);
+                this._colliderObject.active = true;
+            } else {
+                const collision = this._colliderObject.getComponent(CollisionComponent)!;
+                collision.extents.set(extents);
+                this._colliderObject.setPositionLocal([
+                    this.width * 0.5 * this.scaling[0],
+                    -this.height * 0.5 * this.scaling[1],
+                    COLLIDER_THICKNESS / 2,
+                ]);
+            }
         } else {
             this.engine.onResize.add(this._onViewportResize);
             for (const [k, v] of Object.entries(this.callbacks)) {
-                this.engine.canvas.addEventListener(k, v);
+                // Use capture:true to intercept events before they bubble,
+                // ensuring UI events are handled before other handlers.
+                // This allows them to be stopped from propagating further if needed.
+                this.engine.canvas.addEventListener(k, v, {capture: true});
             }
         }
     }
@@ -1378,6 +1425,15 @@ export abstract class ReactUiBase extends Component implements ReactComp {
 
     private _dpiAdjust(value: number) {
         return value * this.pixelSizeAdjustment * this.dpr;
+    }
+
+    private _usePhysx(): boolean {
+        if (
+            this.rayCastMode === RayCastMode.AlwaysPhysX ||
+            (this.rayCastMode === RayCastMode.Auto && this.engine.physics)
+        )
+            return true;
+        return false;
     }
 
     abstract render(): ReactNode;
